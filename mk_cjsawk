@@ -1,0 +1,8 @@
+set -xe
+
+cd artifacts
+export PATH=$PWD:$PATH
+
+cd ../../tcc_simple/experiments/cjsawk/
+
+js.exe ../../../mmvm_v2/cjsawk_smold.js
