@@ -9,3 +9,5 @@ gcc artifacts/js.o -L../firefox-1.0.8/lib/ -lmozjs -o artifacts/js.exe
 ldd artifacts/js.exe
 
 artifacts/js.exe -f mandel.js
+
+echo DONE
