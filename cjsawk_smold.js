@@ -16,12 +16,14 @@ read=function(x,y){
   return read_(x);
 };
 
-
 function gen_out2(){
   if(out_file[out_file.length-1]=== mkc("\n")){
    out_file.pop();
   }
-  return out_file.map(function(x){return String.fromCharCode(x)}).join("");
+  for(var i = 0; i < out_file.length;i++) {
+    out_file[i] = String.fromCharCode(out_file[i]);
+  }
+  return out_file.join("");
 }
 
 /* FIXME this try catch is a bodge and will swallow errors */
