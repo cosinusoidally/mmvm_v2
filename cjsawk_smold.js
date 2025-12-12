@@ -17,4 +17,16 @@ read=function(x,y){
 };
 
 
-load("cjsawk_test.js");
+function gen_out2(){
+  if(out_file[out_file.length-1]=== mkc("\n")){
+   out_file.pop();
+  }
+  return out_file.map(function(x){return String.fromCharCode(x)}).join("");
+}
+
+/* FIXME this try catch is a bodge and will swallow errors */
+try {
+  load("cjsawk_test.js");
+} catch(e) {
+  print(gen_out2());
+}
