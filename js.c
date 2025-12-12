@@ -2378,13 +2378,14 @@ main(int argc, char **argv, char **envp)
     if (!envobj || !JS_SetPrivate(cx, envobj, envp))
         return 1;
 
+    if (!JS_DefineFunction(cx, glob, "read", snarf, 1, 0))
+        return 1;
+
 #ifdef NARCISSUS
     {
         jsval v;
         static const char Object_prototype[] = "Object.prototype";
 
-        if (!JS_DefineFunction(cx, glob, "snarf", snarf, 1, 0))
-            return 1;
         if (!JS_EvaluateScript(cx, glob,
                                Object_prototype, sizeof Object_prototype - 1,
                                NULL, 0, &v)) {
