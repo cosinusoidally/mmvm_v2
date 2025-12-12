@@ -7,10 +7,12 @@ read=function(x,y){
     if(y==="binary"){
       var b=read_(x);
       b=b.split("");
-      b=b.map(function(x) {return x.charCodeAt(0);});
+      for(var i = 0; i< b.length;i++) {
+        b[i] = b[i].charCodeAt(0);
+      }
       return b;
-    };
-  };
+    }
+  }
   return read_(x);
 };
 
