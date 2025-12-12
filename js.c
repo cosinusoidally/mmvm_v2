@@ -2174,35 +2174,6 @@ static JSClass env_class = {
     JS_ConvertStub,   JS_FinalizeStub
 };
 
-#ifdef NARCISSUS
-
-static JSBool
-defineProperty(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
-               jsval *rval)
-{
-    JSString *str;
-    jsval value;
-    JSBool dontDelete, readOnly, dontEnum;
-    const jschar *chars;
-    size_t length;
-    uintN attrs;
-
-    dontDelete = readOnly = dontEnum = JS_FALSE;
-    if (!JS_ConvertArguments(cx, argc, argv, "Sv/bbb",
-                             &str, &value, &dontDelete, &readOnly, &dontEnum)) {
-        return JS_FALSE;
-    }
-    chars = JS_GetStringChars(str);
-    length = JS_GetStringLength(str);
-    attrs = dontEnum ? 0 : JSPROP_ENUMERATE;
-    if (dontDelete)
-        attrs |= JSPROP_PERMANENT;
-    if (readOnly)
-        attrs |= JSPROP_READONLY;
-    return JS_DefineUCProperty(cx, obj, chars, length, value, NULL, NULL,
-                               attrs);
-}
-
 #include <fcntl.h>
 #include <sys/stat.h>
 
@@ -2255,8 +2226,6 @@ snarf(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     *rval = STRING_TO_JSVAL(str);
     return JS_TRUE;
 }
-
-#endif /* NARCISSUS */
 
 int
 main(int argc, char **argv, char **envp)
