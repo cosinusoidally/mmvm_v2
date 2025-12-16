@@ -54,8 +54,18 @@ libc.calloc = (function() {
     return peek8(o+heap_, o);
   }
 
+  function wi32(o,v) {
+    poke32(o+heap_, v);
+  }
+
+  function ri32(o) {
+    return peek32(o+heap_, o);
+  }
+
   wi8_ = wi8;
   ri8_ = ri8;
+  wi32_ = wi32;
+  ri32_ = ri32;
 })();
 
 load = function(name) {
