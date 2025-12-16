@@ -2269,6 +2269,29 @@ ffi_call(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
   return JS_TRUE;
 }
 
+#include <stdint.h>
+uint8_t *heap = 0;
+
+static JSBool
+peek8(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
+{
+  int o;
+  JS_ValueToInt32(cx, argv[0], &o);
+  JS_NewDoubleValue(cx, (double)heap[o], rval);
+  return JS_TRUE;
+}
+
+static JSBool
+poke8(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
+{
+  int o;
+  int v;
+  JS_ValueToInt32(cx, argv[0], &o);
+  JS_ValueToInt32(cx, argv[1], &v);
+  heap[o] = v & 255;
+  return JS_TRUE;
+}
+
 int
 main(int argc, char **argv, char **envp)
 {
