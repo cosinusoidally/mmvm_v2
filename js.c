@@ -2230,9 +2230,20 @@ snarf(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 #include <dlfcn.h>
 
 static JSBool
-get_dlopen(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
+get_dlsym(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
-  return JS_NewNumberValue(cx, (double)((int)dlopen), rval); 
+  return JS_NewNumberValue(cx, (double)((int)dlsym), rval);
+}
+
+
+static JSBool
+ffi_call(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
+{
+  printf("ffi argc: %d\n", argc);
+  for(int i =0; i<argc; i++) {
+    printf("arg %d: 0x%x\n", i, argv[i]);
+  }
+  return JS_TRUE;
 }
 
 int
@@ -2389,7 +2400,10 @@ main(int argc, char **argv, char **envp)
     if (!JS_DefineFunction(cx, glob, "read", snarf, 1, 0))
         return 1;
 
-    if (!JS_DefineFunction(cx, glob, "get_dlopen", get_dlopen, 0, 0))
+    if (!JS_DefineFunction(cx, glob, "get_dlsym", get_dlsym, 0, 0))
+        return 1;
+
+    if (!JS_DefineFunction(cx, glob, "ffi_call", ffi_call, 0, 0))
         return 1;
 
 #ifdef NARCISSUS
