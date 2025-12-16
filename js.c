@@ -2292,6 +2292,30 @@ poke8(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
   return JS_TRUE;
 }
 
+static JSBool
+peek32(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
+{
+  int o;
+  int *h;
+  JS_ValueToInt32(cx, argv[0], &o);
+  h = o;
+  JS_NewDoubleValue(cx, (double)h[0], rval);
+  return JS_TRUE;
+}
+
+static JSBool
+poke32(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
+{
+  int o;
+  int v;
+  int *h;
+  JS_ValueToInt32(cx, argv[0], &o);
+  h = o;
+  JS_ValueToInt32(cx, argv[1], &v);
+  h[0] = v;
+  return JS_TRUE;
+}
+
 int
 main(int argc, char **argv, char **envp)
 {
@@ -2456,6 +2480,12 @@ main(int argc, char **argv, char **envp)
         return 1;
 
     if (!JS_DefineFunction(cx, glob, "poke8", poke8, 0, 0))
+        return 1;
+
+    if (!JS_DefineFunction(cx, glob, "peek32", peek32, 0, 0))
+        return 1;
+
+    if (!JS_DefineFunction(cx, glob, "poke32", poke32, 0, 0))
         return 1;
 
 #ifdef NARCISSUS
