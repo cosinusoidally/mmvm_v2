@@ -46,12 +46,12 @@ libc.calloc = (function() {
 (function() {
   var heap_ = libc.calloc(16*1024*1024, 1);
 
-  function wi8(v,o) {
-    poke8(v+heap_, o);
+  function wi8(o,v) {
+    poke8(o+heap_, v);
   }
 
-  function ri8(v,o) {
-    return peek8(v+heap_, o);
+  function ri8(o) {
+    return peek8(o+heap_, o);
   }
 
   wi8_ = wi8;
@@ -62,8 +62,8 @@ load = function(name) {
 //  print("load: " + name);
   load_(name);
   if(name === "cjsawk.js") {
-//    wi8 = wi8_;
-//    ri8 = ri8_;
+    wi8 = wi8_;
+    ri8 = ri8_;
 //    gen_out = function(){return "";};
   }
   return;
