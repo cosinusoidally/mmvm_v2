@@ -9,3 +9,5 @@ print("dlsym: "+to_hex(dlsym));
 puts = ffi_call(dlsym, 0, "puts");
 
 print("puts: "+to_hex(puts));
+
+ffi_call(puts, "Hello world via ffi");

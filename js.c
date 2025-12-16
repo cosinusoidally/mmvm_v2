@@ -2245,14 +2245,14 @@ ffi_call(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
   char* s;
   int args[8];
   printf("ffi argc: %d\n", argc);
-  if(JSVAL_IS_INT(argv[0])) {
+  if(JSVAL_IS_NUMBER(argv[0])) {
     JS_ValueToInt32(cx, argv[0], &ptr);
   } else {
     return JS_FALSE;
   }
   for(int i =1; i<9; i++) {
     rval[0] = argv[i];
-    if(JSVAL_IS_INT(rval[0])) {
+    if(JSVAL_IS_NUMBER(rval[0])) {
       JS_ValueToInt32(cx, rval[0], &v);
       printf("arg %d: 0x%x\n", i, v);
       args[i-1] = v;
