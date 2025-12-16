@@ -74,6 +74,8 @@ load = function(name) {
   if(name === "cjsawk.js") {
     wi8 = wi8_;
     ri8 = ri8_;
+    wi32 = wi32_;
+    ri32 = ri32_;
 //    gen_out = function(){return "";};
   }
   return;
