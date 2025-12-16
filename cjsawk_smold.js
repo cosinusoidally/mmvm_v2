@@ -26,6 +26,34 @@ function gen_out2(){
   return out_file.join("");
 }
 
+load_ = load;
+
+dlsym_ptr = get_dlsym();
+
+function dlsym(handle, name) {
+  return ffi_call(dlsym_ptr, handle, name);
+}
+
+libc = {};
+
+libc.calloc = (function() {
+  var calloc_ptr = dlsym(0, "calloc");
+  return function(nmemb, size) {
+    return ffi_call(calloc_ptr, nmemb, size);
+  };
+})();
+
+load = function(name) {
+//  print("load: " + name);
+  load_(name);
+  if(name === "cjsawk.js") {
+//    wi8 = wi8_;
+//    ri8 = ri8_;
+//    gen_out = function(){return "";};
+  }
+  return;
+}
+
 /* FIXME this try catch is a bodge and will swallow errors */
 try {
   load("cjsawk_test.js");
