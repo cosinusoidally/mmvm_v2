@@ -2452,6 +2452,12 @@ main(int argc, char **argv, char **envp)
     if (!JS_DefineFunction(cx, glob, "ffi_call", ffi_call, 9, 0))
         return 1;
 
+    if (!JS_DefineFunction(cx, glob, "peek8", peek8, 0, 0))
+        return 1;
+
+    if (!JS_DefineFunction(cx, glob, "poke8", poke8, 0, 0))
+        return 1;
+
 #ifdef NARCISSUS
     {
         jsval v;
