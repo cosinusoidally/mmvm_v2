@@ -2244,7 +2244,7 @@ ffi_call(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
   int ptr;
   char* s;
   int args[8];
-  printf("ffi argc: %d\n", argc);
+//  printf("ffi argc: %d\n", argc);
   if(JSVAL_IS_NUMBER(argv[0])) {
     JS_ValueToInt32(cx, argv[0], &ptr);
   } else {
@@ -2254,11 +2254,11 @@ ffi_call(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     rval[0] = argv[i];
     if(JSVAL_IS_NUMBER(rval[0])) {
       JS_ValueToInt32(cx, rval[0], &v);
-      printf("arg %d: 0x%x\n", i, v);
+//      printf("arg %d: 0x%x\n", i, v);
       args[i-1] = v;
     } else  if(JSVAL_IS_STRING(rval[0])) {
       s = JS_GetStringBytes(JSVAL_TO_STRING(argv[i]));
-      printf("arg %d: %s\n", i, s);
+//      printf("arg %d: %s\n", i, s);
       args[i-1] = s;
     } else {
       args[i-1] = 0;

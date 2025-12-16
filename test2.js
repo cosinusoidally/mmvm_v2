@@ -2,12 +2,33 @@ function to_hex(x) {
   return "0x"+((x>>>0).toString(16));
 }
 
-dlsym = get_dlsym();
+dlsym_ptr = get_dlsym();
 
-print("dlsym: "+to_hex(dlsym));
+function dlsym(handle, name) {
+  return ffi_call(dlsym_ptr, handle, name);
+}
 
-puts = ffi_call(dlsym, 0, "puts");
+print("dlsym_ptr: "+to_hex(dlsym_ptr));
 
-print("puts: "+to_hex(puts));
+puts = (function() {
+  var puts_ptr = dlsym(0, "puts");
+  return function(str) {
+    return ffi_call(puts_ptr, str);
+  };
+})();
 
-ffi_call(puts, "Hello world via ffi");
+puts("Hello world via ffi");
+
+calloc = (function() {
+  var calloc_ptr = dlsym(0, "calloc");
+  return function(nmemb, size) {
+    return ffi_call(calloc_ptr, nmemb, size);
+  };
+})();
+
+m = calloc(1024, 1);
+
+poke8(m, 65);
+poke8(m+1, 0);
+
+
