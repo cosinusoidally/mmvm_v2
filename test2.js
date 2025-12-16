@@ -31,4 +31,4 @@ m = calloc(1024, 1);
 poke8(m, 65);
 poke8(m+1, 0);
 
-
+puts(m);
