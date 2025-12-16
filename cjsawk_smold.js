@@ -43,6 +43,21 @@ libc.calloc = (function() {
   };
 })();
 
+(function() {
+  var heap_ = libc.calloc(16*1024*1024, 1);
+
+  function wi8(v,o) {
+    poke8(v+heap_, o);
+  }
+
+  function ri8(v,o) {
+    return peek8(v+heap_, o);
+  }
+
+  wi8_ = wi8;
+  ri8_ = ri8;
+})();
+
 load = function(name) {
 //  print("load: " + name);
   load_(name);
