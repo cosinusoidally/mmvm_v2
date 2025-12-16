@@ -2227,6 +2227,14 @@ snarf(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     return JS_TRUE;
 }
 
+#include <dlfcn.h>
+
+static JSBool
+get_dlopen(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
+{
+  return JS_NewNumberValue(cx, (double)((int)dlopen), rval); 
+}
+
 int
 main(int argc, char **argv, char **envp)
 {
@@ -2379,6 +2387,9 @@ main(int argc, char **argv, char **envp)
         return 1;
 
     if (!JS_DefineFunction(cx, glob, "read", snarf, 1, 0))
+        return 1;
+
+    if (!JS_DefineFunction(cx, glob, "get_dlopen", get_dlopen, 0, 0))
         return 1;
 
 #ifdef NARCISSUS
