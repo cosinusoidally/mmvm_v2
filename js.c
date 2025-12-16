@@ -2235,13 +2235,29 @@ get_dlsym(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
   return JS_NewNumberValue(cx, (double)((int)dlsym), rval);
 }
 
+typedef int (* my_ffi_stub)(int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8);
 
 static JSBool
 ffi_call(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
+  int v;
+  char* s;
+  int args[8];
   printf("ffi argc: %d\n", argc);
-  for(int i =0; i<argc; i++) {
-    printf("arg %d: 0x%x\n", i, argv[i]);
+  for(int i =0; i<8; i++) {
+    rval[0] = argv[i];
+    if(JSVAL_IS_INT(rval[0])) {
+      JS_ValueToInt32(cx, rval[0], &v);
+      printf("arg %d: 0x%x\n", i, v);
+      args[i] = v;
+    } else  if(JSVAL_IS_STRING(rval[0])) {
+      argv[i] = JS_ValueToString(cx,rval[0]);
+      s = JS_GetStringBytes(argv[i]);
+      printf("arg %d: %s\n", i, s);
+      args[i] = s;
+    } else {
+      args[i] = 0;
+    }
   }
   return JS_TRUE;
 }
@@ -2403,7 +2419,7 @@ main(int argc, char **argv, char **envp)
     if (!JS_DefineFunction(cx, glob, "get_dlsym", get_dlsym, 0, 0))
         return 1;
 
-    if (!JS_DefineFunction(cx, glob, "ffi_call", ffi_call, 0, 0))
+    if (!JS_DefineFunction(cx, glob, "ffi_call", ffi_call, 9, 0))
         return 1;
 
 #ifdef NARCISSUS
