@@ -6,4 +6,6 @@ dlsym = get_dlsym();
 
 print("dlsym: "+to_hex(dlsym));
 
-ffi_call(dlsym, "puts");
+puts = ffi_call(dlsym, 0, "puts");
+
+print("puts: "+to_hex(puts));
