@@ -7,11 +7,33 @@ pushd .
 cd artifacts
 export PATH=$PWD:$PATH
 
+function compile_js {
+  echo "build $2.M1"
+  time js.exe ../../../mmvm_v2/cjsawk_smold.js --cmd cjsawk $1 $2.M1
+
+  echo "append definitions to make $2-0.M1"
+
+  cat ../m2min_v3/simple_asm_defs.M1 ../m2min_v3/x86_defs.M1 ../m2min_v3/libc-core.M1 $2.M1 > $2-0.M1
+
+  echo "build $2.hex2"
+  time js.exe ../../../mmvm_v2/cjsawk_smold.js --cmd m0 $2-0.M1 $2.hex2
+
+  echo "generate $2-0.hex2"
+  cat ../m2min_v3/ELF-i386.hex2 $2.hex2 > $2-0.hex2
+
+  echo "build $2"
+  time js.exe ../../../mmvm_v2/cjsawk_smold.js --cmd hex2 $2-0.hex2 $2
+
+  chmod +x $2
+}
+
 cd ../../tcc_simple/experiments/cjsawk/
 
 time js.exe ../../../mmvm_v2/cjsawk_smold.js --cmd cjsawk ./artifacts/deps/cjsawk_full.c ../../../mmvm_v2/artifacts/cjsawk.exe.M1
 time js.exe ../../../mmvm_v2/cjsawk_smold.js --cmd m0 ./artifacts/builds/full_cc_x86_min/cjsawk.exe-0.M1 ../../../mmvm_v2/artifacts/cjsawk.exe.hex2
 time js.exe ../../../mmvm_v2/cjsawk_smold.js --cmd hex2 ./artifacts/builds/full_cc_x86_min/cjsawk.exe-0.hex2 ../../../mmvm_v2/artifacts/cjsawk.exe
+
+compile_js artifacts/deps/cjsawk_full.c ../../../mmvm_v2/artifacts/cjsawk2.exe
 
 popd
 
