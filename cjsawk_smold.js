@@ -64,6 +64,13 @@ libc.fclose = (function() {
   };
 })();
 
+libc.exit = (function() {
+  var exit_ptr = dlsym(0, "exit");
+  return function(n) {
+    return ffi_call(exit_ptr, n);
+  };
+})();
+
 (function() {
   var heap_ = libc.calloc(16*1024*1024, 1);
 
@@ -115,7 +122,19 @@ function write_file(oname, data) {
   libc.fclose(f);
 }
 
-fname = arguments[0];
-load("cjsawk_test.js");
-write_file(arguments[1], out_file);
+if(arguments[0] !== "--cmd") {
+  print("usage --cmd cjsawk|m0|hex2 infile outfile");
+  libc.exit(1);
+}
+
+if(arguments[1] === "cjsawk") {
+  script_file = "cjsawk_test.js";
+} else {
+  print("invalid command: "+ arguments[1]);
+  libc.exit(1);
+}
+
+fname = arguments[2];
+load(script_file);
+write_file(arguments[3], out_file);
 //  print(gen_out2());
