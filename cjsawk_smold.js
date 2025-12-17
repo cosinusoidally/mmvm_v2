@@ -72,7 +72,8 @@ libc.exit = (function() {
 })();
 
 (function() {
-  var heap_ = libc.calloc(16*1024*1024, 1);
+  var heap_size = 16*1024*1024;
+  var heap_ = libc.calloc(heap_size, 1);
 
   function wi8(o,v) {
     poke8(o+heap_, v);
@@ -99,11 +100,14 @@ libc.exit = (function() {
 load = function(name) {
 //  print("load: " + name);
   load_(name);
-  if(name === "cjsawk.js") {
-    wi8 = wi8_;
-    ri8 = ri8_;
-    wi32 = wi32_;
-    ri32 = ri32_;
+  if((name === "cjsawk.js") || (name === "m0.js")) {
+    /* for some reason these functions are segfaulting for m0 */
+    if(name === "cjsawk.js") {
+      wi8 = wi8_;
+      ri8 = ri8_;
+      wi32 = wi32_;
+      ri32 = ri32_;
+    }
     gen_out = function(){return "dummy gen_out";};
   }
   return;
@@ -129,6 +133,8 @@ if(arguments[0] !== "--cmd") {
 
 if(arguments[1] === "cjsawk") {
   script_file = "cjsawk_test.js";
+} else if(arguments[1] === "m0") {
+  script_file = "m0_test.js";
 } else {
   print("invalid command: "+ arguments[1]);
   libc.exit(1);
