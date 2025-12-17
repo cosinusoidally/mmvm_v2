@@ -28,6 +28,27 @@ libc.calloc = (function() {
   };
 })();
 
+libc.fopen = (function() {
+  var fopen_ptr = dlsym(0, "fopen");
+  return function(path, mode) {
+    return ffi_call(fopen_ptr, path, mode);
+  };
+})();
+
+libc.fwrite = (function() {
+  var fwrite_ptr = dlsym(0, "fwrite");
+  return function(ptr, size, nmemb, stream) {
+    return ffi_call(fwrite_ptr, ptr, size, nmemb, stream);
+  };
+})();
+
+libc.fclose = (function() {
+  var fclose_ptr = dlsym(0, "fclose");
+  return function(stream) {
+    return ffi_call(fclose_ptr, stream);
+  };
+})();
+
 m = libc.calloc(1024, 1);
 
 poke8(m, 65);
