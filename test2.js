@@ -19,14 +19,16 @@ puts = (function() {
 
 puts("Hello world via ffi");
 
-calloc = (function() {
+libc = {};
+
+libc.calloc = (function() {
   var calloc_ptr = dlsym(0, "calloc");
   return function(nmemb, size) {
     return ffi_call(calloc_ptr, nmemb, size);
   };
 })();
 
-m = calloc(1024, 1);
+m = libc.calloc(1024, 1);
 
 poke8(m, 65);
 poke8(m+1, 0);
