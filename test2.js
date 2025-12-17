@@ -64,4 +64,6 @@ function write_file(oname, data) {
   libc.fclose(f);
 }
 
-write_file(arguments[1]);
+d = [65, 66, 67];
+
+write_file(arguments[1], d);
