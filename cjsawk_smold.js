@@ -126,6 +126,11 @@ function write_file(oname, data) {
   libc.fclose(f);
 }
 
+/* dummy buffer implementation */
+function Buffer() {
+  return "dummy buffer impl";
+}
+
 if(arguments[0] !== "--cmd") {
   print("usage --cmd cjsawk|m0|hex2 infile outfile");
   libc.exit(1);
