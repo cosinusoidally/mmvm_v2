@@ -29,11 +29,7 @@ function compile_js {
 
 cd ../../tcc_simple/experiments/cjsawk/
 
-time js.exe ../../../mmvm_v2/cjsawk_smold.js --cmd cjsawk ./artifacts/deps/cjsawk_full.c ../../../mmvm_v2/artifacts/cjsawk.exe.M1
-time js.exe ../../../mmvm_v2/cjsawk_smold.js --cmd m0 ./artifacts/builds/full_cc_x86_min/cjsawk.exe-0.M1 ../../../mmvm_v2/artifacts/cjsawk.exe.hex2
-time js.exe ../../../mmvm_v2/cjsawk_smold.js --cmd hex2 ./artifacts/builds/full_cc_x86_min/cjsawk.exe-0.hex2 ../../../mmvm_v2/artifacts/cjsawk.exe
-
-compile_js artifacts/deps/cjsawk_full.c ../../../mmvm_v2/artifacts/cjsawk2.exe
+compile_js artifacts/deps/cjsawk_full.c ../../../mmvm_v2/artifacts/cjsawk.exe
 
 popd
 
