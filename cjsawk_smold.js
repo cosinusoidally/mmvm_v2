@@ -83,7 +83,7 @@ load = function(name) {
 
 /* FIXME this try catch is a bodge and will swallow errors */
 try {
-  fname = "./artifacts/deps/cjsawk_full.c";
+  fname = arguments[0];
   load("cjsawk_test.js");
 } catch(e) {
   print(gen_out2());

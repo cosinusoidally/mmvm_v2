@@ -5,4 +5,4 @@ export PATH=$PWD:$PATH
 
 cd ../../tcc_simple/experiments/cjsawk/
 
-js.exe ../../../mmvm_v2/cjsawk_smold.js
+js.exe ../../../mmvm_v2/cjsawk_smold.js ./artifacts/deps/cjsawk_full.c
