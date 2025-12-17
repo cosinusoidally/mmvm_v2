@@ -57,10 +57,15 @@ poke8(m+1, 0);
 puts(m);
 
 function write_file(oname, data) {
+  var t = libc.calloc(data.length, 1);
   if(oname === undefined) {
     throw "oname is undefined";
   }
-  f = libc.fopen(oname, "wb");
+  for(var i = 0; i <data.length; i++) {
+    poke8(t+i, data[i]);
+  }
+  var f = libc.fopen(oname, "wb");
+  libc.fwrite(t, 1, data.length, f);
   libc.fclose(f);
 }
 
