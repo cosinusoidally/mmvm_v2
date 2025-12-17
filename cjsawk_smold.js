@@ -43,6 +43,27 @@ libc.calloc = (function() {
   };
 })();
 
+libc.fopen = (function() {
+  var fopen_ptr = dlsym(0, "fopen");
+  return function(path, mode) {
+    return ffi_call(fopen_ptr, path, mode);
+  };
+})();
+
+libc.fwrite = (function() {
+  var fwrite_ptr = dlsym(0, "fwrite");
+  return function(ptr, size, nmemb, stream) {
+    return ffi_call(fwrite_ptr, ptr, size, nmemb, stream);
+  };
+})();
+
+libc.fclose = (function() {
+  var fclose_ptr = dlsym(0, "fclose");
+  return function(stream) {
+    return ffi_call(fclose_ptr, stream);
+  };
+})();
+
 (function() {
   var heap_ = libc.calloc(16*1024*1024, 1);
 
@@ -79,6 +100,19 @@ load = function(name) {
 //    gen_out = function(){return "";};
   }
   return;
+}
+
+function write_file(oname, data) {
+  var t = libc.calloc(data.length, 1);
+  if(oname === undefined) {
+    throw "oname is undefined";
+  }
+  for(var i = 0; i <data.length; i++) {
+    poke8(t+i, data[i]);
+  }
+  var f = libc.fopen(oname, "wb");
+  libc.fwrite(t, 1, data.length, f);
+  libc.fclose(f);
 }
 
 /* FIXME this try catch is a bodge and will swallow errors */
