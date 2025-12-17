@@ -55,3 +55,13 @@ poke8(m, 65);
 poke8(m+1, 0);
 
 puts(m);
+
+function write_file(oname, data) {
+  if(oname === undefined) {
+    throw "oname is undefined";
+  }
+  f = libc.fopen(oname, "wb");
+  libc.fclose(f);
+}
+
+write_file(arguments[1]);
