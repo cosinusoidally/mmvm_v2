@@ -135,6 +135,8 @@ if(arguments[1] === "cjsawk") {
   script_file = "cjsawk_test.js";
 } else if(arguments[1] === "m0") {
   script_file = "m0_test.js";
+} else if(arguments[1] === "hex2") {
+  script_file = "hex2_test.js";
 } else {
   print("invalid command: "+ arguments[1]);
   libc.exit(1);
