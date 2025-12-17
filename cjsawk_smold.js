@@ -120,6 +120,6 @@ try {
   fname = arguments[0];
   load("cjsawk_test.js");
 } catch(e) {
-  print(gen_out2());
   write_file(arguments[1], out_file);
+  print(gen_out2());
 }
