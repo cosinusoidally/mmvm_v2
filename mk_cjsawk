@@ -1,8 +1,18 @@
 set -xe
 
+./mk
+
+pushd .
+
 cd artifacts
 export PATH=$PWD:$PATH
 
 cd ../../tcc_simple/experiments/cjsawk/
 
 js.exe ../../../mmvm_v2/cjsawk_smold.js ./artifacts/deps/cjsawk_full.c ../../../mmvm_v2/artifacts/cjsawk.M1
+
+popd
+
+diff -u -s artifacts/cjsawk.M1 ../tcc_simple/experiments/cjsawk/artifacts/builds/full_cc_x86_min/cjsawk.exe.M1
+
+echo "DONE"

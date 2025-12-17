@@ -97,7 +97,7 @@ load = function(name) {
     ri8 = ri8_;
     wi32 = wi32_;
     ri32 = ri32_;
-//    gen_out = function(){return "";};
+    gen_out = function(){return "dummy gen_out";};
   }
   return;
 }
@@ -115,11 +115,7 @@ function write_file(oname, data) {
   libc.fclose(f);
 }
 
-/* FIXME this try catch is a bodge and will swallow errors */
-try {
-  fname = arguments[0];
-  load("cjsawk_test.js");
-} catch(e) {
-  write_file(arguments[1], out_file);
-  print(gen_out2());
-}
+fname = arguments[0];
+load("cjsawk_test.js");
+write_file(arguments[1], out_file);
+//  print(gen_out2());
