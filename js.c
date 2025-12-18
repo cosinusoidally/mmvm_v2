@@ -2297,10 +2297,10 @@ poke8(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 static JSBool
 peek32(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
-  int o;
+  double o;
   int *h;
-  JS_ValueToInt32(cx, argv[0], &o);
-  h = o;
+  JS_ValueToNumber(cx, argv[0], &o);
+  h = (int)o;
   JS_NewDoubleValue(cx, (double)h[0], rval);
   return JS_TRUE;
 }
@@ -2308,13 +2308,13 @@ peek32(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 static JSBool
 poke32(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
-  int o;
-  int v;
+  double o;
+  double v;
   int *h;
-  JS_ValueToInt32(cx, argv[0], &o);
-  h = o;
-  JS_ValueToInt32(cx, argv[1], &v);
-  h[0] = v;
+  JS_ValueToNumber(cx, argv[0], &o);
+  h = (int)o;
+  JS_ValueToNumber(cx, argv[1], &v);
+  h[0] = (int)v;
   return JS_TRUE;
 }
 
