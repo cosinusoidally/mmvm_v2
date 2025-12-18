@@ -2277,20 +2277,20 @@ uint8_t *heap = 0;
 static JSBool
 peek8(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
-  int o;
-  JS_ValueToInt32(cx, argv[0], &o);
-  JS_NewDoubleValue(cx, (double)heap[o], rval);
+  double o;
+  JS_ValueToNumber(cx, argv[0], &o);
+  JS_NewDoubleValue(cx, (double)heap[(int)o], rval);
   return JS_TRUE;
 }
 
 static JSBool
 poke8(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
-  int o;
-  int v;
-  JS_ValueToInt32(cx, argv[0], &o);
-  JS_ValueToInt32(cx, argv[1], &v);
-  heap[o] = v & 255;
+  double o;
+  double v;
+  JS_ValueToNumber(cx, argv[0], &o);
+  JS_ValueToNumber(cx, argv[1], &v);
+  heap[(int)o] = (int)v & 255;
   return JS_TRUE;
 }
 
