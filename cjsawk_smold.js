@@ -84,6 +84,12 @@ libc.exit = (function() {
   }
 
   function wi32(o,v) {
+    /* FIXME add check for undefined. Should not be needed, but m0 seems to
+     * call with an undefined v which then triggers a segfault later */
+    if(v === undefined) {
+      print("undefined v in wi32");
+      return 0;
+    }
     poke32(o+heap_, v);
   }
 
@@ -101,13 +107,10 @@ load = function(name) {
 //  print("load: " + name);
   load_(name);
   if((name === "cjsawk.js") || (name === "m0.js")) {
-    /* for some reason these functions are segfaulting for m0 */
-    if(name === "cjsawk.js") {
-      wi8 = wi8_;
-      ri8 = ri8_;
-      wi32 = wi32_;
-      ri32 = ri32_;
-    }
+    wi8 = wi8_;
+    ri8 = ri8_;
+    wi32 = wi32_;
+    ri32 = ri32_;
     gen_out = function(){return "dummy gen_out";};
   }
   return;
