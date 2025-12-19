@@ -97,14 +97,12 @@ my_GetErrorMessage(void *userRef, const char *locale, const uintN errorNumber);
 
 static JSBool
 GetLine(JSContext *cx, char *bufp, FILE *file, const char *prompt) {
-    {
-        char line[256];
-        fprintf(gOutFile, prompt);
-        fflush(gOutFile);
-        if (!fgets(line, sizeof line, file))
-            return JS_FALSE;
-        strcpy(bufp, line);
-    }
+    char line[256];
+    fprintf(gOutFile, prompt);
+    fflush(gOutFile);
+    if (!fgets(line, sizeof line, file))
+        return JS_FALSE;
+    strcpy(bufp, line);
     return JS_TRUE;
 }
 
