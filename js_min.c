@@ -178,25 +178,6 @@ usage(void)
     return 2;
 }
 
-static uint32 gBranchCount;
-static uint32 gBranchLimit;
-
-static JSBool
-my_BranchCallback(JSContext *cx, JSScript *script)
-{
-    if (++gBranchCount == gBranchLimit) {
-        if (script->filename)
-            fprintf(gErrFile, "%s:", script->filename);
-        fprintf(gErrFile, "%u: script branches too much (%u callbacks)\n",
-                script->lineno, gBranchLimit);
-        gBranchCount = 0;
-        return JS_FALSE;
-    }
-    if ((gBranchCount & 0x3fff) == 1)
-        JS_MaybeGC(cx);
-    return JS_TRUE;
-}
-
 extern JSClass global_class;
 
 static int
@@ -294,11 +275,6 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
                 JS_SetGlobalObject(cx, gobj);
                 obj = gobj;
             }
-            break;
-
-        case 'b':
-            gBranchLimit = atoi(argv[++i]);
-            JS_SetBranchCallback(cx, my_BranchCallback);
             break;
 
         case 'c':
