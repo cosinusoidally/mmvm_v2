@@ -1266,6 +1266,7 @@ static JSFunctionSpec shell_functions[] = {
     {"gc",              GC,             0},
     {"read",            snarf,          1},
     {"get_dlsym",       get_dlsym,      0},
+    {"ffi_call",        ffi_call,       9},
     {0}
 };
 
@@ -1313,9 +1314,6 @@ main(int argc, char **argv, char **envp)
 
     envobj = JS_DefineObject(cx, glob, "environment", &env_class, NULL, 0);
     if (!envobj || !JS_SetPrivate(cx, envobj, envp))
-        return 1;
-
-    if (!JS_DefineFunction(cx, glob, "ffi_call", ffi_call, 9, 0))
         return 1;
 
     if (!JS_DefineFunction(cx, glob, "peek8", peek8, 0, 0))
