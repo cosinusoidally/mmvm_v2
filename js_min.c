@@ -572,16 +572,6 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
 }
 
 
-static JSBool
-Version(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
-{
-    if (argc > 0 && JSVAL_IS_INT(argv[0]))
-        *rval = INT_TO_JSVAL(JS_SetVersion(cx, (JSVersion) JSVAL_TO_INT(argv[0])));
-    else
-        *rval = INT_TO_JSVAL(JS_GetVersion(cx));
-    return JS_TRUE;
-}
-
 static void
 my_LoadErrorReporter(JSContext *cx, const char *message, JSErrorReport *report);
 
@@ -762,47 +752,11 @@ TrapHandler(JSContext *cx, JSScript *script, jsbytecode *pc, jsval *rval,
     return JSTRAP_CONTINUE;
 }
 
-static JSBool
-Trap(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
-{
-    JSString *str;
-    JSScript *script;
-    int32 i;
-
-    if (argc == 0) {
-        JS_ReportErrorNumber(cx, my_GetErrorMessage, NULL, JSSMSG_TRAP_USAGE);
-        return JS_FALSE;
-    }
-    argc--;
-    str = JS_ValueToString(cx, argv[argc]);
-    if (!str)
-        return JS_FALSE;
-    argv[argc] = STRING_TO_JSVAL(str);
-    if (!GetTrapArgs(cx, argc, argv, &script, &i))
-        return JS_FALSE;
-    return JS_SetTrap(cx, script, script->code + i, TrapHandler, str);
-}
-
-static JSBool
-Untrap(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
-{
-    JSScript *script;
-    int32 i;
-
-    if (!GetTrapArgs(cx, argc, argv, &script, &i))
-        return JS_FALSE;
-    JS_ClearTrap(cx, script, script->code + i, NULL, NULL);
-    return JS_TRUE;
-}
-
 static JSFunctionSpec shell_functions[] = {
-    {"version",         Version,        0},
     {"load",            Load,           1},
     {"print",           Print,          0},
     {"quit",            Quit,           0},
     {"gc",              GC,             0},
-    {"trap",            Trap,           3},
-    {"untrap",          Untrap,         2},
     {0}
 };
 
