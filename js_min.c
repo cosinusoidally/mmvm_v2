@@ -39,14 +39,12 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-/*
- * JS shell.
- */
-#include "jsstddef.h"
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "jsstddef.h"
 #include "jsapi.h"
 #include "jscntxt.h"
 
