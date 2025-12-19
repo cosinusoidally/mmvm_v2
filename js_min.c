@@ -1269,6 +1269,8 @@ static JSFunctionSpec shell_functions[] = {
     {"ffi_call",        ffi_call,       9},
     {"peek8",           peek8,          0},
     {"poke8",           poke8,          0},
+    {"peek32",          peek32,         0},
+    {"poke32",          poke32,         0},
     {0}
 };
 
@@ -1316,12 +1318,6 @@ main(int argc, char **argv, char **envp)
 
     envobj = JS_DefineObject(cx, glob, "environment", &env_class, NULL, 0);
     if (!envobj || !JS_SetPrivate(cx, envobj, envp))
-        return 1;
-
-    if (!JS_DefineFunction(cx, glob, "peek32", peek32, 0, 0))
-        return 1;
-
-    if (!JS_DefineFunction(cx, glob, "poke32", poke32, 0, 0))
         return 1;
 
     result = ProcessArgs(cx, glob, argv, argc);
