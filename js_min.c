@@ -64,11 +64,11 @@
 #include "jsscope.h"
 #include "jsscript.h"
 
-#ifdef XP_UNIX
+
+/* some UNIX includes */
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#endif
 
 #define EXITCODE_RUNTIME_ERROR 3
 #define EXITCODE_FILE_NOT_FOUND 4
