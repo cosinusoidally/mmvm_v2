@@ -146,28 +146,28 @@ Process(JSContext *cx, JSObject *obj, char *filename)
     }
     JS_SetThreadStackLimit(cx, stackLimit);
 
-        /*
-         * It's not interactive - just execute it.
-         *
-         * Support the UNIX #! shell hack; gobble the first line if it starts
-         * with '#'.  TODO - this isn't quite compatible with sharp variables,
-         * as a legal js program (using sharp variables) might start with '#'.
-         * But that would require multi-character lookahead.
-         */
-        int ch = fgetc(file);
-        if (ch == '#') {
-            while((ch = fgetc(file)) != EOF) {
-                if (ch == '\n' || ch == '\r')
-                    break;
-            }
+    /*
+     * It's not interactive - just execute it.
+     *
+     * Support the UNIX #! shell hack; gobble the first line if it starts
+     * with '#'.  TODO - this isn't quite compatible with sharp variables,
+     * as a legal js program (using sharp variables) might start with '#'.
+     * But that would require multi-character lookahead.
+     */
+    int ch = fgetc(file);
+    if (ch == '#') {
+        while((ch = fgetc(file)) != EOF) {
+            if (ch == '\n' || ch == '\r')
+                break;
         }
-        ungetc(ch, file);
-        script = JS_CompileFileHandle(cx, obj, filename, file);
-        if (script) {
-            (void)JS_ExecuteScript(cx, obj, script, &result);
-            JS_DestroyScript(cx, script);
-        }
-        return;
+    }
+    ungetc(ch, file);
+    script = JS_CompileFileHandle(cx, obj, filename, file);
+    if (script) {
+        (void)JS_ExecuteScript(cx, obj, script, &result);
+        JS_DestroyScript(cx, script);
+    }
+    return;
 }
 
 static int
