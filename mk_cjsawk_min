@@ -30,14 +30,15 @@ function compile_js {
 cd ../../tcc_simple/experiments/cjsawk/
 
 compile_js artifacts/deps/cjsawk_full.c ../../../mmvm_v2/artifacts/cjsawk.exe
-compile_js artifacts/deps/m0_full.c ../../../mmvm_v2/artifacts/m0.exe
-compile_js artifacts/deps/hex2_full.c ../../../mmvm_v2/artifacts/hex2.exe
+# compile_js artifacts/deps/m0_full.c ../../../mmvm_v2/artifacts/m0.exe
+# compile_js artifacts/deps/hex2_full.c ../../../mmvm_v2/artifacts/hex2.exe
 
 popd
 
 sha1sum artifacts/*exe ../tcc_simple/experiments/cjsawk/artifacts/builds/full_cc_x86_min/*exe |sort
 
-for i in cjsawk m0 hex2 ; do
+# for i in cjsawk m0 hex2 ; do
+for i in cjsawk ; do
 diff -u -s artifacts/$i.exe ../tcc_simple/experiments/cjsawk/artifacts/builds/full_cc_x86_min/$i.exe
 done
 
