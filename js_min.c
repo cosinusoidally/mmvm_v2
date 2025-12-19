@@ -47,22 +47,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "jstypes.h"
-#include "jsarena.h"
-#include "jsutil.h"
-#include "jsprf.h"
 #include "jsapi.h"
-#include "jsatom.h"
 #include "jscntxt.h"
-#include "jsdbgapi.h"
-#include "jsemit.h"
-#include "jsfun.h"
-#include "jsgc.h"
-#include "jslock.h"
-#include "jsobj.h"
-#include "jsparse.h"
-#include "jsscope.h"
-#include "jsscript.h"
 
 #define EXITCODE_RUNTIME_ERROR 3
 #define EXITCODE_FILE_NOT_FOUND 4
