@@ -529,7 +529,6 @@ static JSBool
 global_resolve(JSContext *cx, JSObject *obj, jsval id, uintN flags,
                JSObject **objp)
 {
-#ifdef LAZY_STANDARD_CLASSES
     if ((flags & JSRESOLVE_ASSIGNING) == 0) {
         JSBool resolved;
 
@@ -540,7 +539,6 @@ global_resolve(JSContext *cx, JSObject *obj, jsval id, uintN flags,
             return JS_TRUE;
         }
     }
-#endif
     return JS_TRUE;
 }
 
