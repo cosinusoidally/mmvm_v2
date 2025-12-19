@@ -1264,6 +1264,7 @@ static JSFunctionSpec shell_functions[] = {
     {"print",           Print,          0},
     {"quit",            Quit,           0},
     {"gc",              GC,             0},
+    {"read",            snarf,          1},
     {0}
 };
 
@@ -1311,9 +1312,6 @@ main(int argc, char **argv, char **envp)
 
     envobj = JS_DefineObject(cx, glob, "environment", &env_class, NULL, 0);
     if (!envobj || !JS_SetPrivate(cx, envobj, envp))
-        return 1;
-
-    if (!JS_DefineFunction(cx, glob, "read", snarf, 1, 0))
         return 1;
 
     if (!JS_DefineFunction(cx, glob, "get_dlsym", get_dlsym, 0, 0))
