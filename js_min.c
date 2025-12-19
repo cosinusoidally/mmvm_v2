@@ -50,6 +50,9 @@
 #include "jsapi.h"
 #include "jscntxt.h"
 
+/* FIXME move this to separate file and impl a win32 polyfill */
+#include <dlfcn.h>
+
 #define EXITCODE_RUNTIME_ERROR 3
 #define EXITCODE_FILE_NOT_FOUND 4
 
@@ -687,8 +690,6 @@ snarf(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     *rval = STRING_TO_JSVAL(str);
     return JS_TRUE;
 }
-
-#include <dlfcn.h>
 
 static JSBool
 get_dlsym(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
