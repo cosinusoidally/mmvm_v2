@@ -42,4 +42,6 @@ for i in hex2 ; do
 diff -u -s artifacts/$i.exe ../tcc_simple/experiments/cjsawk/artifacts/builds/full_cc_x86_min/$i.exe
 done
 
+wc js_min.c
+
 echo "DONE"

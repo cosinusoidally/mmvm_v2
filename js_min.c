@@ -2328,15 +2328,18 @@ main(int argc, char **argv, char **envp)
     JSObject *glob, *it, *envobj;
     int result;
 #ifdef LIVECONNECT
+exit(1);
     JavaVM *java_vm = NULL;
 #endif
 #ifdef JSDEBUGGER_JAVA_UI
+exit(1);
     JNIEnv *java_env;
 #endif
 
     gStackBase = (jsuword)&stackDummy;
 
 #ifdef XP_OS2
+exit(1);
    /* these streams are normally line buffered on OS/2 and need a \n, *
     * so we need to unbuffer then to get a reasonable prompt          */
     setbuf(stdout,0);
@@ -2348,11 +2351,13 @@ main(int argc, char **argv, char **envp)
 
 #ifdef XP_MAC
 #ifndef XP_MAC_MPW
+exit(1);
     initConsole("\pJavaScript Shell", "Welcome to js shell.", &argc, &argv);
 #endif
 #endif
 
 #ifdef MAC_TEST_HACK
+exit(1);
 /*
     Open a file "testArgs.txt" and read each line into argc/argv.
     Re-direct all output to "results.txt"
@@ -2405,6 +2410,7 @@ main(int argc, char **argv, char **envp)
 #ifdef LAZY_STANDARD_CLASSES
     JS_SetGlobalObject(cx, glob);
 #else
+exit(1);
     if (!JS_InitStandardClasses(cx, glob))
         return 1;
 #endif
@@ -2424,11 +2430,13 @@ main(int argc, char **argv, char **envp)
         return 1;
 
 #ifdef PERLCONNECT
+exit(1);
     if (!JS_InitPerlClass(cx, glob))
         return 1;
 #endif
 
 #ifdef JSDEBUGGER
+exit(1);
     /*
     * XXX A command line option to enable debugging (or not) would be good
     */
@@ -2437,15 +2445,18 @@ main(int argc, char **argv, char **envp)
         return 1;
     JSD_JSContextInUse(_jsdc, cx);
 #ifdef JSD_LOWLEVEL_SOURCE
+exit(1);
     JS_SetSourceHandler(rt, SendSourceToJSDebugger, _jsdc);
 #endif /* JSD_LOWLEVEL_SOURCE */
 #ifdef JSDEBUGGER_JAVA_UI
+exit(1);
     _jsdjc = JSDJ_CreateContext();
     if (! _jsdjc)
         return 1;
     JSDJ_SetJSDContext(_jsdjc, _jsdc);
     java_env = JSDJ_CreateJavaVMAndStartDebugger(_jsdjc);
 #ifdef LIVECONNECT
+exit(1);
     if (java_env)
         (*java_env)->GetJavaVM(java_env, &java_vm);
 #endif
@@ -2456,11 +2467,13 @@ main(int argc, char **argv, char **envp)
     */
 #endif /* JSDEBUGGER_JAVA_UI */
 #ifdef JSDEBUGGER_C_UI
+exit(1);
     JSDB_InitDebugger(rt, _jsdc, 0);
 #endif /* JSDEBUGGER_C_UI */
 #endif /* JSDEBUGGER */
 
 #ifdef LIVECONNECT
+exit(1);
     if (!JSJ_SimpleInit(cx, glob, java_vm, getenv("CLASSPATH")))
         return 1;
 #endif
@@ -2491,6 +2504,7 @@ main(int argc, char **argv, char **envp)
         return 1;
 
 #ifdef NARCISSUS
+exit(1);
     {
         jsval v;
         static const char Object_prototype[] = "Object.prototype";
@@ -2510,11 +2524,13 @@ main(int argc, char **argv, char **envp)
     result = ProcessArgs(cx, glob, argv, argc);
 
 #ifdef JSDEBUGGER
+exit(1);
     if (_jsdc)
         JSD_DebuggerOff(_jsdc);
 #endif  /* JSDEBUGGER */
 
 #ifdef MAC_TEST_HACK
+exit(1);
     fclose(gTestResultFile);
 #endif
 
