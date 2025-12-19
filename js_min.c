@@ -582,70 +582,6 @@ Version(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     return JS_TRUE;
 }
 
-static struct {
-    const char  *name;
-    uint32      flag;
-} js_options[] = {
-    {"strict",          JSOPTION_STRICT},
-    {"werror",          JSOPTION_WERROR},
-    {0,                 0}
-};
-
-static JSBool
-Options(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
-{
-    uint32 optset, flag;
-    uintN i, j, found;
-    JSString *str;
-    const char *opt;
-    char *names;
-
-    optset = 0;
-    for (i = 0; i < argc; i++) {
-        str = JS_ValueToString(cx, argv[i]);
-        if (!str)
-            return JS_FALSE;
-        opt = JS_GetStringBytes(str);
-        for (j = 0; js_options[j].name; j++) {
-            if (strcmp(js_options[j].name, opt) == 0) {
-                optset |= js_options[j].flag;
-                break;
-            }
-        }
-    }
-    optset = JS_ToggleOptions(cx, optset);
-
-    names = NULL;
-    found = 0;
-    while (optset != 0) {
-        flag = optset;
-        optset &= optset - 1;
-        flag &= ~optset;
-        for (j = 0; js_options[j].name; j++) {
-            if (js_options[j].flag == flag) {
-                names = JS_sprintf_append(names, "%s%s",
-                                          names ? "," : "", js_options[j].name);
-                found++;
-                break;
-            }
-        }
-    }
-    if (!found)
-        names = strdup("");
-    if (!names) {
-        JS_ReportOutOfMemory(cx);
-        return JS_FALSE;
-    }
-
-    str = JS_NewString(cx, names, strlen(names));
-    if (!str) {
-        free(names);
-        return JS_FALSE;
-    }
-    *rval = STRING_TO_JSVAL(str);
-    return JS_TRUE;
-}
-
 static void
 my_LoadErrorReporter(JSContext *cx, const char *message, JSErrorReport *report);
 
@@ -1509,7 +1445,6 @@ Seal(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 
 static JSFunctionSpec shell_functions[] = {
     {"version",         Version,        0},
-    {"options",         Options,        0},
     {"load",            Load,           1},
     {"print",           Print,          0},
     {"quit",            Quit,           0},
