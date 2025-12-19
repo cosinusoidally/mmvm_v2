@@ -752,14 +752,6 @@ TrapHandler(JSContext *cx, JSScript *script, jsbytecode *pc, jsval *rval,
     return JSTRAP_CONTINUE;
 }
 
-static JSFunctionSpec shell_functions[] = {
-    {"load",            Load,           1},
-    {"print",           Print,          0},
-    {"quit",            Quit,           0},
-    {"gc",              GC,             0},
-    {0}
-};
-
 JSErrorFormatString jsShell_ErrorFormatString[JSErr_Limit] = {
 #if JS_HAS_DFLT_MSG_STRINGS
 #define MSG_DEF(name, number, count, exception, format) \
@@ -1266,6 +1258,14 @@ poke32(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
   h[0] = (int)v;
   return JS_TRUE;
 }
+
+static JSFunctionSpec shell_functions[] = {
+    {"load",            Load,           1},
+    {"print",           Print,          0},
+    {"quit",            Quit,           0},
+    {"gc",              GC,             0},
+    {0}
+};
 
 int
 main(int argc, char **argv, char **envp)
