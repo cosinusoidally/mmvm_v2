@@ -647,10 +647,6 @@ Print(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 static JSBool
 Quit(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
-#ifdef LIVECONNECT
-    JSJ_SimpleShutdown();
-#endif
-
     JS_ConvertArguments(cx, argc, argv,"/ i", &gExitCode);
 
     gQuitting = JS_TRUE;
@@ -993,117 +989,6 @@ Disassemble(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     return JS_TRUE;
 }
 
-static JSBool
-DisassWithSrc(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
-              jsval *rval)
-{
-#define LINE_BUF_LEN 512
-    uintN i, len, line1, line2, bupline;
-    JSScript *script;
-    FILE *file;
-    char linebuf[LINE_BUF_LEN];
-    jsbytecode *pc, *end;
-    static char sep[] = ";-------------------------";
-
-    for (i = 0; i < argc; i++) {
-        script = ValueToScript(cx, argv[i]);
-        if (!script)
-            continue;
-
-        if (!script || !script->filename) {
-            JS_ReportErrorNumber(cx, my_GetErrorMessage, NULL,
-                                            JSSMSG_FILE_SCRIPTS_ONLY);
-            return JS_FALSE;
-        }
-
-        file = fopen(script->filename, "r");
-        if (!file) {
-            JS_ReportErrorNumber(cx, my_GetErrorMessage, NULL,
-                            JSSMSG_CANT_OPEN,
-                            script->filename, strerror(errno));
-            return JS_FALSE;
-        }
-
-        pc = script->code;
-        end = pc + script->length;
-
-        /* burn the leading lines */
-        line2 = JS_PCToLineNumber(cx, script, pc);
-        for (line1 = 0; line1 < line2 - 1; line1++)
-            fgets(linebuf, LINE_BUF_LEN, file);
-
-        bupline = 0;
-        while (pc < end) {
-            line2 = JS_PCToLineNumber(cx, script, pc);
-
-            if (line2 < line1) {
-                if (bupline != line2) {
-                    bupline = line2;
-                    fprintf(gOutFile, "%s %3u: BACKUP\n", sep, line2);
-                }
-            } else {
-                if (bupline && line1 == line2)
-                    fprintf(gOutFile, "%s %3u: RESTORE\n", sep, line2);
-                bupline = 0;
-                while (line1 < line2) {
-                    if (!fgets(linebuf, LINE_BUF_LEN, file)) {
-                        JS_ReportErrorNumber(cx, my_GetErrorMessage, NULL,
-                                       JSSMSG_UNEXPECTED_EOF,
-                                       script->filename);
-                        goto bail;
-                    }
-                    line1++;
-                    fprintf(gOutFile, "%s %3u: %s", sep, line1, linebuf);
-                }
-            }
-
-            len = js_Disassemble1(cx, script, pc,
-                                  PTRDIFF(pc, script->code, jsbytecode),
-                                  JS_TRUE, stdout);
-            if (!len)
-                return JS_FALSE;
-            pc += len;
-        }
-
-      bail:
-        fclose(file);
-    }
-    return JS_TRUE;
-#undef LINE_BUF_LEN
-}
-
-static JSBool
-Tracing(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
-{
-    JSBool bval;
-    JSString *str;
-
-    if (argc == 0) {
-        *rval = BOOLEAN_TO_JSVAL(cx->tracefp != 0);
-        return JS_TRUE;
-    }
-
-    switch (JS_TypeOfValue(cx, argv[0])) {
-      case JSTYPE_NUMBER:
-        bval = JSVAL_IS_INT(argv[0])
-               ? JSVAL_TO_INT(argv[0])
-               : (jsint) *JSVAL_TO_DOUBLE(argv[0]);
-        break;
-      case JSTYPE_BOOLEAN:
-        bval = JSVAL_TO_BOOLEAN(argv[0]);
-        break;
-      default:
-        str = JS_ValueToString(cx, argv[0]);
-        if (!str)
-            return JS_FALSE;
-        fprintf(gErrFile, "tracing: illegal argument %s\n",
-                JS_GetStringBytes(str));
-        return JS_TRUE;
-    }
-    cx->tracefp = bval ? stderr : NULL;
-    return JS_TRUE;
-}
-
 typedef struct DumpAtomArgs {
     JSContext   *cx;
     FILE        *fp;
@@ -1112,6 +997,7 @@ typedef struct DumpAtomArgs {
 static int
 DumpAtom(JSHashEntry *he, int i, void *arg)
 {
+exit(1);
     DumpAtomArgs *args = (DumpAtomArgs *)arg;
     FILE *fp = args->fp;
     JSAtom *atom = (JSAtom *)he;
