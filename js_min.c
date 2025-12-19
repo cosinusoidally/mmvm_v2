@@ -795,45 +795,6 @@ Untrap(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     return JS_TRUE;
 }
 
-static JSBool
-LineToPC(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
-{
-    JSScript *script;
-    int32 i;
-    uintN lineno;
-    jsbytecode *pc;
-
-    if (argc == 0) {
-        JS_ReportErrorNumber(cx, my_GetErrorMessage, NULL, JSSMSG_LINE2PC_USAGE);
-        return JS_FALSE;
-    }
-    script = cx->fp->down->script;
-    if (!GetTrapArgs(cx, argc, argv, &script, &i))
-        return JS_FALSE;
-    lineno = (i == 0) ? script->lineno : (uintN)i;
-    pc = JS_LineNumberToPC(cx, script, lineno);
-    if (!pc)
-        return JS_FALSE;
-    *rval = INT_TO_JSVAL(PTRDIFF(pc, script->code, jsbytecode));
-    return JS_TRUE;
-}
-
-static JSBool
-PCToLine(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
-{
-    JSScript *script;
-    int32 i;
-    uintN lineno;
-
-    if (!GetTrapArgs(cx, argc, argv, &script, &i))
-        return JS_FALSE;
-    lineno = JS_PCToLineNumber(cx, script, script->code + i);
-    if (!lineno)
-        return JS_FALSE;
-    *rval = INT_TO_JSVAL(lineno);
-    return JS_TRUE;
-}
-
 static JSFunctionSpec shell_functions[] = {
     {"version",         Version,        0},
     {"load",            Load,           1},
@@ -842,8 +803,6 @@ static JSFunctionSpec shell_functions[] = {
     {"gc",              GC,             0},
     {"trap",            Trap,           3},
     {"untrap",          Untrap,         2},
-    {"line2pc",         LineToPC,       0},
-    {"pc2line",         PCToLine,       0},
     {0}
 };
 
