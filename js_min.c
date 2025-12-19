@@ -64,32 +64,10 @@
 #include "jsscope.h"
 #include "jsscript.h"
 
-#ifdef PERLCONNECT
-#include "perlconnect/jsperl.h"
-#endif
-
-#ifdef LIVECONNECT
-#include "jsjava.h"
-#endif
-
-#ifdef JSDEBUGGER
-#include "jsdebug.h"
-#ifdef JSDEBUGGER_JAVA_UI
-#include "jsdjava.h"
-#endif /* JSDEBUGGER_JAVA_UI */
-#ifdef JSDEBUGGER_C_UI
-#include "jsdb.h"
-#endif /* JSDEBUGGER_C_UI */
-#endif /* JSDEBUGGER */
-
 #ifdef XP_UNIX
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#endif
-
-#if defined(XP_WIN) || defined(XP_OS2)
-#include <io.h>     /* for isatty() */
 #endif
 
 #define EXITCODE_RUNTIME_ERROR 3
