@@ -146,7 +146,6 @@ Process(JSContext *cx, JSObject *obj, char *filename)
     }
     JS_SetThreadStackLimit(cx, stackLimit);
 
-    if (!isatty(fileno(file))) {
         /*
          * It's not interactive - just execute it.
          *
@@ -169,54 +168,6 @@ Process(JSContext *cx, JSObject *obj, char *filename)
             JS_DestroyScript(cx, script);
         }
         return;
-    }
-
-    /* It's an interactive filehandle; drop into read-eval-print loop. */
-    lineno = 1;
-    hitEOF = JS_FALSE;
-    do {
-        bufp = buffer;
-        *bufp = '\0';
-
-        /*
-         * Accumulate lines until we get a 'compilable unit' - one that either
-         * generates an error (before running out of source) or that compiles
-         * cleanly.  This should be whenever we get a complete statement that
-         * coincides with the end of a line.
-         */
-        startline = lineno;
-        do {
-            if (!GetLine(cx, bufp, file, startline == lineno ? "js> " : "")) {
-                hitEOF = JS_TRUE;
-                break;
-            }
-            bufp += strlen(bufp);
-            lineno++;
-        } while (!JS_BufferIsCompilableUnit(cx, obj, buffer, strlen(buffer)));
-
-        /* Clear any pending exception from previous failed compiles.  */
-        JS_ClearPendingException(cx);
-        script = JS_CompileScript(cx, obj, buffer, strlen(buffer),
-#ifdef JSDEBUGGER
-                                  "typein",
-#else
-                                  NULL,
-#endif
-                                  startline);
-        if (script) {
-            ok = JS_ExecuteScript(cx, obj, script, &result);
-            if (ok && result != JSVAL_VOID) {
-                str = JS_ValueToString(cx, result);
-                if (str)
-                    fprintf(gOutFile, "%s\n", JS_GetStringBytes(str));
-                else
-                    ok = JS_FALSE;
-            }
-            JS_DestroyScript(cx, script);
-        }
-    } while (!hitEOF && !gQuitting);
-    fprintf(gOutFile, "\n");
-    return;
 }
 
 static int
