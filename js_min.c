@@ -709,9 +709,6 @@ Print(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 }
 
 static JSBool
-Help(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
-
-static JSBool
 Quit(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
 #ifdef LIVECONNECT
@@ -1515,26 +1512,12 @@ static JSFunctionSpec shell_functions[] = {
     {"options",         Options,        0},
     {"load",            Load,           1},
     {"print",           Print,          0},
-    {"help",            Help,           0},
     {"quit",            Quit,           0},
     {"gc",              GC,             0},
     {"trap",            Trap,           3},
     {"untrap",          Untrap,         2},
     {"line2pc",         LineToPC,       0},
     {"pc2line",         PCToLine,       0},
-#ifdef DEBUG
-    {"dis",             Disassemble,    1},
-    {"dissrc",          DisassWithSrc,  1},
-    {"notes",           Notes,          1},
-    {"tracing",         Tracing,        0},
-    {"stats",           DumpStats,      1},
-#endif
-#ifdef TEST_EXPORT
-    {"xport",           DoExport,       2},
-#endif
-#ifdef TEST_CVTARGS
-    {"cvtargs",         ConvertArgs,    0, 0, 12},
-#endif
     {"build",           BuildDate,      0},
     {"clear",           Clear,          0},
     {"intern",          Intern,         1},
@@ -1542,108 +1525,6 @@ static JSFunctionSpec shell_functions[] = {
     {"seal",            Seal,           1, 0, 1},
     {0}
 };
-
-/* NOTE: These must be kept in sync with the above. */
-
-static char *shell_help_messages[] = {
-    "version([number])      Get or set JavaScript version number",
-    "options([option ...])  Get or toggle JavaScript options",
-    "load(['foo.js' ...])   Load files named by string arguments",
-    "print([exp ...])       Evaluate and print expressions",
-    "help([name ...])       Display usage and help messages",
-    "quit()                 Quit the shell",
-    "gc()                   Run the garbage collector",
-    "trap([fun, [pc,]] exp) Trap bytecode execution",
-    "untrap(fun[, pc])      Remove a trap",
-    "line2pc([fun,] line)   Map line number to PC",
-    "pc2line(fun[, pc])     Map PC to line number",
-#ifdef DEBUG
-    "dis([fun])             Disassemble functions into bytecodes",
-    "dissrc([fun])          Disassemble functions with source lines",
-    "notes([fun])           Show source notes for functions",
-    "tracing([toggle])      Turn tracing on or off",
-    "stats([string ...])    Dump 'arena', 'atom', 'global' stats",
-#endif
-#ifdef TEST_EXPORT
-    "xport(obj, id)         Export identified property from object",
-#endif
-#ifdef TEST_CVTARGS
-    "cvtargs(b, c, ...)     Test JS_ConvertArguments",
-#endif
-    "build()                Show build date and time",
-    "clear([obj])           Clear properties of object",
-    "intern(str)            Internalize str in the atom table",
-    "clone(fun[, scope])    Clone function object",
-    "seal(obj[, deep])      Seal object, or object graph if deep",
-    0
-};
-
-static void
-ShowHelpHeader(void)
-{
-    fprintf(gOutFile, "%-9s %-22s %s\n", "Command", "Usage", "Description");
-    fprintf(gOutFile, "%-9s %-22s %s\n", "=======", "=====", "===========");
-}
-
-static void
-ShowHelpForCommand(uintN n)
-{
-    fprintf(gOutFile, "%-9.9s %s\n", shell_functions[n].name, shell_help_messages[n]);
-}
-
-static JSBool
-Help(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
-{
-    uintN i, j;
-    int did_header, did_something;
-    JSType type;
-    JSFunction *fun;
-    JSString *str;
-    const char *bytes;
-
-    fprintf(gOutFile, "%s\n", JS_GetImplementationVersion());
-    if (argc == 0) {
-        ShowHelpHeader();
-        for (i = 0; shell_functions[i].name; i++)
-            ShowHelpForCommand(i);
-    } else {
-        did_header = 0;
-        for (i = 0; i < argc; i++) {
-            did_something = 0;
-            type = JS_TypeOfValue(cx, argv[i]);
-            if (type == JSTYPE_FUNCTION) {
-                fun = JS_ValueToFunction(cx, argv[i]);
-                str = fun->atom ? ATOM_TO_STRING(fun->atom) : NULL;
-            } else if (type == JSTYPE_STRING) {
-                str = JSVAL_TO_STRING(argv[i]);
-            } else {
-                str = NULL;
-            }
-            if (str) {
-                bytes = JS_GetStringBytes(str);
-                for (j = 0; shell_functions[j].name; j++) {
-                    if (!strcmp(bytes, shell_functions[j].name)) {
-                        if (!did_header) {
-                            did_header = 1;
-                            ShowHelpHeader();
-                        }
-                        did_something = 1;
-                        ShowHelpForCommand(j);
-                        break;
-                    }
-                }
-            }
-            if (!did_something) {
-                str = JS_ValueToString(cx, argv[i]);
-                if (!str)
-                    return JS_FALSE;
-                fprintf(gErrFile, "Sorry, no help for %s\n",
-                        JS_GetStringBytes(str));
-            }
-        }
-    }
-    return JS_TRUE;
-}
 
 /*
  * Define a JS object called "it".  Give it class operations that printf why
