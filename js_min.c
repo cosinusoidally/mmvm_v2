@@ -2327,68 +2327,11 @@ main(int argc, char **argv, char **envp)
     JSContext *cx;
     JSObject *glob, *it, *envobj;
     int result;
-#ifdef LIVECONNECT
-exit(1);
-    JavaVM *java_vm = NULL;
-#endif
-#ifdef JSDEBUGGER_JAVA_UI
-exit(1);
-    JNIEnv *java_env;
-#endif
 
     gStackBase = (jsuword)&stackDummy;
 
-#ifdef XP_OS2
-exit(1);
-   /* these streams are normally line buffered on OS/2 and need a \n, *
-    * so we need to unbuffer then to get a reasonable prompt          */
-    setbuf(stdout,0);
-    setbuf(stderr,0);
-#endif
-
     gErrFile = stderr;
     gOutFile = stdout;
-
-#ifdef XP_MAC
-#ifndef XP_MAC_MPW
-exit(1);
-    initConsole("\pJavaScript Shell", "Welcome to js shell.", &argc, &argv);
-#endif
-#endif
-
-#ifdef MAC_TEST_HACK
-exit(1);
-/*
-    Open a file "testArgs.txt" and read each line into argc/argv.
-    Re-direct all output to "results.txt"
-*/
-    {
-        char argText[256];
-        FILE *f = fopen("testargs.txt", "r");
-        if (f) {
-            int maxArgs = 32; /* arbitrary max !!! */
-            int argText_strlen;
-            argc = 1;
-            argv = malloc(sizeof(char *) * maxArgs);
-            argv[0] = NULL;
-            while (fgets(argText, 255, f)) {
-                 /* argText includes '\n' */
-                argText_strlen = strlen(argText);
-                argv[argc] = malloc(argText_strlen);
-                strncpy(argv[argc], argText, argText_strlen - 1);
-                argv[argc][argText_strlen - 1] = '\0';
-                argc++;
-                if (argc >= maxArgs)
-                    break;
-            }
-            fclose(f);
-        }
-        gTestResultFile = fopen("results.txt", "w");
-    }
-
-    gErrFile = gTestResultFile;
-    gOutFile = gTestResultFile;
-#endif
 
     version = JSVERSION_DEFAULT;
 
@@ -2407,13 +2350,9 @@ exit(1);
     glob = JS_NewObject(cx, &global_class, NULL, NULL);
     if (!glob)
         return 1;
-#ifdef LAZY_STANDARD_CLASSES
+
     JS_SetGlobalObject(cx, glob);
-#else
-exit(1);
-    if (!JS_InitStandardClasses(cx, glob))
-        return 1;
-#endif
+
     if (!JS_DefineFunctions(cx, glob, shell_functions))
         return 1;
 
@@ -2428,55 +2367,6 @@ exit(1);
         return 1;
     if (!JS_DefineFunctions(cx, it, its_methods))
         return 1;
-
-#ifdef PERLCONNECT
-exit(1);
-    if (!JS_InitPerlClass(cx, glob))
-        return 1;
-#endif
-
-#ifdef JSDEBUGGER
-exit(1);
-    /*
-    * XXX A command line option to enable debugging (or not) would be good
-    */
-    _jsdc = JSD_DebuggerOnForUser(rt, NULL, NULL);
-    if (!_jsdc)
-        return 1;
-    JSD_JSContextInUse(_jsdc, cx);
-#ifdef JSD_LOWLEVEL_SOURCE
-exit(1);
-    JS_SetSourceHandler(rt, SendSourceToJSDebugger, _jsdc);
-#endif /* JSD_LOWLEVEL_SOURCE */
-#ifdef JSDEBUGGER_JAVA_UI
-exit(1);
-    _jsdjc = JSDJ_CreateContext();
-    if (! _jsdjc)
-        return 1;
-    JSDJ_SetJSDContext(_jsdjc, _jsdc);
-    java_env = JSDJ_CreateJavaVMAndStartDebugger(_jsdjc);
-#ifdef LIVECONNECT
-exit(1);
-    if (java_env)
-        (*java_env)->GetJavaVM(java_env, &java_vm);
-#endif
-    /*
-    * XXX This would be the place to wait for the debugger to start.
-    * Waiting would be nice in general, but especially when a js file
-    * is passed on the cmd line.
-    */
-#endif /* JSDEBUGGER_JAVA_UI */
-#ifdef JSDEBUGGER_C_UI
-exit(1);
-    JSDB_InitDebugger(rt, _jsdc, 0);
-#endif /* JSDEBUGGER_C_UI */
-#endif /* JSDEBUGGER */
-
-#ifdef LIVECONNECT
-exit(1);
-    if (!JSJ_SimpleInit(cx, glob, java_vm, getenv("CLASSPATH")))
-        return 1;
-#endif
 
     envobj = JS_DefineObject(cx, glob, "environment", &env_class, NULL, 0);
     if (!envobj || !JS_SetPrivate(cx, envobj, envp))
@@ -2503,36 +2393,7 @@ exit(1);
     if (!JS_DefineFunction(cx, glob, "poke32", poke32, 0, 0))
         return 1;
 
-#ifdef NARCISSUS
-exit(1);
-    {
-        jsval v;
-        static const char Object_prototype[] = "Object.prototype";
-
-        if (!JS_EvaluateScript(cx, glob,
-                               Object_prototype, sizeof Object_prototype - 1,
-                               NULL, 0, &v)) {
-            return 1;
-        }
-        if (!JS_DefineFunction(cx, JSVAL_TO_OBJECT(v), "__defineProperty__",
-                               defineProperty, 5, 0)) {
-            return 1;
-        }
-    }
-#endif
-
     result = ProcessArgs(cx, glob, argv, argc);
-
-#ifdef JSDEBUGGER
-exit(1);
-    if (_jsdc)
-        JSD_DebuggerOff(_jsdc);
-#endif  /* JSDEBUGGER */
-
-#ifdef MAC_TEST_HACK
-exit(1);
-    fclose(gTestResultFile);
-#endif
 
     JS_DestroyContext(cx);
     JS_DestroyRuntime(rt);
