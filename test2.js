@@ -71,4 +71,6 @@ function write_file(oname, data) {
 
 d = [65, 66, 67];
 
+gc();
+
 write_file(arguments[1], d);
