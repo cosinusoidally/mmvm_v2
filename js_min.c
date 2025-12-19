@@ -43,6 +43,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 #include "jsstddef.h"
 #include "jsapi.h"
@@ -635,9 +637,6 @@ static JSClass env_class = {
     env_enumerate, (JSResolveOp) env_resolve,
     JS_ConvertStub,   JS_FinalizeStub
 };
-
-#include <fcntl.h>
-#include <sys/stat.h>
 
 static JSBool
 snarf(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
