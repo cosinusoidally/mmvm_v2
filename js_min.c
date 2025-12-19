@@ -401,24 +401,6 @@ GC(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     return JS_TRUE;
 }
 
-static JSScript *
-ValueToScript(JSContext *cx, jsval v)
-{
-    JSScript *script;
-    JSFunction *fun;
-
-    if (JSVAL_IS_OBJECT(v) &&
-        JS_GET_CLASS(cx, JSVAL_TO_OBJECT(v)) == &js_ScriptClass) {
-        script = (JSScript *) JS_GetPrivate(cx, JSVAL_TO_OBJECT(v));
-    } else {
-        fun = JS_ValueToFunction(cx, v);
-        if (!fun)
-            return NULL;
-        script = fun->script;
-    }
-    return script;
-}
-
 JSErrorFormatString jsShell_ErrorFormatString[JSErr_Limit] = {
 #if JS_HAS_DFLT_MSG_STRINGS
 #define MSG_DEF(name, number, count, exception, format) \
