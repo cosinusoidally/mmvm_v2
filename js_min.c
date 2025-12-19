@@ -513,16 +513,10 @@ my_ErrorReporter(JSContext *cx, const char *message, JSErrorReport *report)
     JS_free(cx, prefix);
 }
 
-#define LAZY_STANDARD_CLASSES
-
 static JSBool
 global_enumerate(JSContext *cx, JSObject *obj)
 {
-#ifdef LAZY_STANDARD_CLASSES
     return JS_EnumerateStandardClasses(cx, obj);
-#else
-    return JS_TRUE;
-#endif
 }
 
 static JSBool
