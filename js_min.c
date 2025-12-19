@@ -419,52 +419,6 @@ ValueToScript(JSContext *cx, jsval v)
     return script;
 }
 
-static JSBool
-GetTrapArgs(JSContext *cx, uintN argc, jsval *argv, JSScript **scriptp,
-            int32 *ip)
-{
-    uintN intarg;
-    JSScript *script;
-
-    *scriptp = cx->fp->down->script;
-    *ip = 0;
-    if (argc != 0) {
-        intarg = 0;
-        if (JS_TypeOfValue(cx, argv[0]) == JSTYPE_FUNCTION) {
-            script = ValueToScript(cx, argv[0]);
-            if (!script)
-                return JS_FALSE;
-            *scriptp = script;
-            intarg++;
-        }
-        if (argc > intarg) {
-            if (!JS_ValueToInt32(cx, argv[intarg], ip))
-                return JS_FALSE;
-        }
-    }
-    return JS_TRUE;
-}
-
-static JSTrapStatus
-TrapHandler(JSContext *cx, JSScript *script, jsbytecode *pc, jsval *rval,
-            void *closure)
-{
-    JSString *str;
-    JSStackFrame *caller;
-
-    str = (JSString *) closure;
-    caller = JS_GetScriptedCaller(cx, NULL);
-    if (!JS_EvaluateScript(cx, caller->scopeChain,
-                           JS_GetStringBytes(str), JS_GetStringLength(str),
-                           caller->script->filename, caller->script->lineno,
-                           rval)) {
-        return JSTRAP_ERROR;
-    }
-    if (*rval != JSVAL_VOID)
-        return JSTRAP_RETURN;
-    return JSTRAP_CONTINUE;
-}
-
 JSErrorFormatString jsShell_ErrorFormatString[JSErr_Limit] = {
 #if JS_HAS_DFLT_MSG_STRINGS
 #define MSG_DEF(name, number, count, exception, format) \
