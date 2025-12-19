@@ -864,56 +864,6 @@ my_ErrorReporter(JSContext *cx, const char *message, JSErrorReport *report)
     JS_free(cx, prefix);
 }
 
-#if defined(SHELL_HACK) && defined(DEBUG) && defined(XP_UNIX)
-static JSBool
-Exec(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
-{
-    JSFunction *fun;
-    const char *name, **nargv;
-    uintN i, nargc;
-    JSString *str;
-    pid_t pid;
-    int status;
-
-    fun = JS_ValueToFunction(cx, argv[-2]);
-    if (!fun)
-        return JS_FALSE;
-    if (!fun->atom)
-        return JS_TRUE;
-    name = JS_GetStringBytes(ATOM_TO_STRING(fun->atom));
-    nargc = 1 + argc;
-    nargv = JS_malloc(cx, (nargc + 1) * sizeof(char *));
-    if (!nargv)
-        return JS_FALSE;
-    nargv[0] = name;
-    for (i = 1; i < nargc; i++) {
-        str = JS_ValueToString(cx, argv[i-1]);
-        if (!str) {
-            JS_free(cx, nargv);
-            return JS_FALSE;
-        }
-        nargv[i] = JS_GetStringBytes(str);
-    }
-    nargv[nargc] = 0;
-    pid = fork();
-    switch (pid) {
-      case -1:
-        perror("js");
-        break;
-      case 0:
-        (void) execvp(name, (char **)nargv);
-        perror("js");
-        exit(127);
-      default:
-        while (waitpid(pid, &status, 0) < 0 && errno == EINTR)
-            continue;
-        break;
-    }
-    JS_free(cx, nargv);
-    return JS_TRUE;
-}
-#endif
-
 #define LAZY_STANDARD_CLASSES
 
 static JSBool
@@ -1281,7 +1231,7 @@ main(int argc, char **argv, char **envp)
     JSVersion version;
     JSRuntime *rt;
     JSContext *cx;
-    JSObject *glob, *it, *envobj;
+    JSObject *glob, *envobj;
     int result;
 
     gStackBase = (jsuword)&stackDummy;
