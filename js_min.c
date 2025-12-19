@@ -95,39 +95,12 @@ typedef enum JSShellErrNum {
 static const JSErrorFormatString *
 my_GetErrorMessage(void *userRef, const char *locale, const uintN errorNumber);
 
-#ifdef EDITLINE
-extern char     *readline(const char *prompt);
-extern void     add_history(char *line);
-#endif
-
 static JSBool
 GetLine(JSContext *cx, char *bufp, FILE *file, const char *prompt) {
-#ifdef EDITLINE
-    /*
-     * Use readline only if file is stdin, because there's no way to specify
-     * another handle.  Are other filehandles interactive?
-     */
-    if (file == stdin) {
-        char *linep = readline(prompt);
-        if (!linep)
-            return JS_FALSE;
-        if (linep[0] != '\0')
-            add_history(linep);
-        strcpy(bufp, linep);
-        JS_free(cx, linep);
-        bufp += strlen(bufp);
-        *bufp++ = '\n';
-        *bufp = '\0';
-    } else
-#endif
     {
         char line[256];
         fprintf(gOutFile, prompt);
         fflush(gOutFile);
-#ifdef XP_MAC_MPW
-        /* Print a CR after the prompt because MPW grabs the entire line when entering an interactive command */
-        fputc('\n', gOutFile);
-#endif
         if (!fgets(line, sizeof line, file))
             return JS_FALSE;
         strcpy(bufp, line);
