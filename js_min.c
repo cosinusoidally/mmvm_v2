@@ -541,57 +541,7 @@ global_resolve(JSContext *cx, JSObject *obj, jsval id, uintN flags,
         }
     }
 #endif
-
-#if defined(SHELL_HACK) && defined(DEBUG) && defined(XP_UNIX)
-    if ((flags & (JSRESOLVE_QUALIFIED | JSRESOLVE_ASSIGNING)) == 0) {
-        /*
-         * Do this expensive hack only for unoptimized Unix builds, which are
-         * not used for benchmarking.
-         */
-        char *path, *comp, *full;
-        const char *name;
-        JSBool ok, found;
-        JSFunction *fun;
-
-        if (!JSVAL_IS_STRING(id))
-            return JS_TRUE;
-        path = getenv("PATH");
-        if (!path)
-            return JS_TRUE;
-        path = JS_strdup(cx, path);
-        if (!path)
-            return JS_FALSE;
-        name = JS_GetStringBytes(JSVAL_TO_STRING(id));
-        ok = JS_TRUE;
-        for (comp = strtok(path, ":"); comp; comp = strtok(NULL, ":")) {
-            if (*comp != '\0') {
-                full = JS_smprintf("%s/%s", comp, name);
-                if (!full) {
-                    JS_ReportOutOfMemory(cx);
-                    ok = JS_FALSE;
-                    break;
-                }
-            } else {
-                full = (char *)name;
-            }
-            found = (access(full, X_OK) == 0);
-            if (*comp != '\0')
-                free(full);
-            if (found) {
-                fun = JS_DefineFunction(cx, obj, name, Exec, 0,
-                                        JSPROP_ENUMERATE);
-                ok = (fun != NULL);
-                if (ok)
-                    *objp = obj;
-                break;
-            }
-        }
-        JS_free(cx, path);
-        return ok;
-    }
-#else
     return JS_TRUE;
-#endif
 }
 
 JSClass global_class = {
