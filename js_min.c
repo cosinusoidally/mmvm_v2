@@ -57,7 +57,6 @@
 
 size_t gStackChunkSize = 8192;
 int gExitCode = 0;
-JSBool gQuitting = JS_FALSE;
 FILE *gErrFile = NULL;
 FILE *gOutFile = NULL;
 
@@ -193,8 +192,6 @@ static JSBool
 Quit(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
     JS_ConvertArguments(cx, argc, argv,"/ i", &gExitCode);
-
-    gQuitting = JS_TRUE;
     return JS_FALSE;
 }
 
