@@ -321,10 +321,10 @@ global_resolve(JSContext *cx, JSObject *obj, jsval id, uintN flags,
 }
 
 JSClass global_class = {
-    "global", JSCLASS_NEW_RESOLVE,
+    "global", 0,
     JS_PropertyStub,  JS_PropertyStub,
     JS_PropertyStub,  JS_PropertyStub,
-    global_enumerate, (JSResolveOp) global_resolve,
+    JS_EnumerateStub, JS_ResolveStub,
     JS_ConvertStub,   JS_FinalizeStub
 };
 
