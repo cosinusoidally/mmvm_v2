@@ -455,7 +455,7 @@ static JSFunctionSpec shell_functions[] = {
 };
 
 int
-main(int argc, char **argv, char **envp)
+main(int argc, char **argv)
 {
     JSRuntime *rt;
     JSContext *cx;
