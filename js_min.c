@@ -245,16 +245,7 @@ Quit(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 static JSBool
 GC(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
-    JSRuntime *rt;
-    uint32 preBytes;
-
-    rt = cx->runtime;
-    preBytes = rt->gcBytes;
     JS_GC(cx);
-    fprintf(gOutFile, "before %lu, after %lu, break %08lx\n",
-            (unsigned long)preBytes, (unsigned long)rt->gcBytes,
-            (unsigned long)sbrk(0)
-            );
     return JS_TRUE;
 }
 
