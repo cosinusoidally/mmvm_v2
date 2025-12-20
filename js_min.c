@@ -92,22 +92,16 @@ GetLine(JSContext *cx, char *bufp, FILE *file, const char *prompt) {
 static void
 Process(JSContext *cx, JSObject *obj, char *filename)
 {
-    JSBool ok, hitEOF;
     JSScript *script;
     jsval result;
-    JSString *str;
-    char buffer[4096];
-    char *bufp;
-    int lineno;
-    int startline;
     FILE *file;
-    jsuword stackLimit;
 
     if (!filename || strcmp(filename, "-") == 0) {
         file = stdin;
     } else {
         file = fopen(filename, "r");
         if (!file) {
+            printf("Process: file not found: %s\n", filename);
             JS_ReportErrorNumber(cx, my_GetErrorMessage, NULL,
                                  JSSMSG_CANT_OPEN, filename, strerror(errno));
             gExitCode = EXITCODE_FILE_NOT_FOUND;
@@ -117,22 +111,6 @@ Process(JSContext *cx, JSObject *obj, char *filename)
 
     JS_SetThreadStackLimit(cx, 0);
 
-    /*
-     * It's not interactive - just execute it.
-     *
-     * Support the UNIX #! shell hack; gobble the first line if it starts
-     * with '#'.  TODO - this isn't quite compatible with sharp variables,
-     * as a legal js program (using sharp variables) might start with '#'.
-     * But that would require multi-character lookahead.
-     */
-    int ch = fgetc(file);
-    if (ch == '#') {
-        while((ch = fgetc(file)) != EOF) {
-            if (ch == '\n' || ch == '\r')
-                break;
-        }
-    }
-    ungetc(ch, file);
     script = JS_CompileFileHandle(cx, obj, filename, file);
     if (script) {
         (void)JS_ExecuteScript(cx, obj, script, &result);
