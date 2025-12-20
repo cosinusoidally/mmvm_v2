@@ -297,29 +297,6 @@ my_ErrorReporter(JSContext *cx, const char *message, JSErrorReport *report)
     JS_free(cx, prefix);
 }
 
-static JSBool
-global_enumerate(JSContext *cx, JSObject *obj)
-{
-    return JS_EnumerateStandardClasses(cx, obj);
-}
-
-static JSBool
-global_resolve(JSContext *cx, JSObject *obj, jsval id, uintN flags,
-               JSObject **objp)
-{
-    if ((flags & JSRESOLVE_ASSIGNING) == 0) {
-        JSBool resolved;
-
-        if (!JS_ResolveStandardClass(cx, obj, id, &resolved))
-            return JS_FALSE;
-        if (resolved) {
-            *objp = obj;
-            return JS_TRUE;
-        }
-    }
-    return JS_TRUE;
-}
-
 JSClass global_class = {
     "global", 0,
     JS_PropertyStub,  JS_PropertyStub,
