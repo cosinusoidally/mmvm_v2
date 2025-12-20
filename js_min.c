@@ -78,17 +78,6 @@ typedef enum JSShellErrNum {
 static const JSErrorFormatString *
 my_GetErrorMessage(void *userRef, const char *locale, const uintN errorNumber);
 
-static JSBool
-GetLine(JSContext *cx, char *bufp, FILE *file, const char *prompt) {
-    char line[256];
-    fprintf(gOutFile, prompt);
-    fflush(gOutFile);
-    if (!fgets(line, sizeof line, file))
-        return JS_FALSE;
-    strcpy(bufp, line);
-    return JS_TRUE;
-}
-
 static void
 Process(JSContext *cx, JSObject *obj, char *filename)
 {
@@ -111,14 +100,6 @@ Process(JSContext *cx, JSObject *obj, char *filename)
         JS_DestroyScript(cx, script);
     }
     return;
-}
-
-static int
-usage(void)
-{
-    fprintf(gErrFile, "%s\n", JS_GetImplementationVersion());
-    fprintf(gErrFile, "usage: js [-PswW] [-b branchlimit] [-c stackchunksize] [-v version] [-f scriptfile] [-S maxstacksize] [scriptfile] [scriptarg...]\n");
-    return 2;
 }
 
 extern JSClass global_class;
