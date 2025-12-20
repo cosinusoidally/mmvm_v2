@@ -115,19 +115,7 @@ Process(JSContext *cx, JSObject *obj, char *filename)
         }
     }
 
-    if (gMaxStackSize == 0) {
-        /*
-         * Disable checking for stack overflow if limit is zero.
-         */
-        stackLimit = 0;
-    } else {
-#if JS_STACK_GROWTH_DIRECTION > 0
-        stackLimit = gStackBase + gMaxStackSize;
-#else
-        stackLimit = gStackBase - gMaxStackSize;
-#endif
-    }
-    JS_SetThreadStackLimit(cx, stackLimit);
+    JS_SetThreadStackLimit(cx, 0);
 
     /*
      * It's not interactive - just execute it.
