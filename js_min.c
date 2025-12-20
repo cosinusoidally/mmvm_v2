@@ -96,17 +96,11 @@ Process(JSContext *cx, JSObject *obj, char *filename)
     jsval result;
     FILE *file;
 
-    if (!filename || strcmp(filename, "-") == 0) {
-        file = stdin;
-    } else {
-        file = fopen(filename, "r");
-        if (!file) {
-            printf("Process: file not found: %s\n", filename);
-            JS_ReportErrorNumber(cx, my_GetErrorMessage, NULL,
-                                 JSSMSG_CANT_OPEN, filename, strerror(errno));
-            gExitCode = EXITCODE_FILE_NOT_FOUND;
-            return;
-        }
+    file = fopen(filename, "r");
+    if (!file) {
+        printf("Process: file not found: %s\n", filename);
+        gExitCode = EXITCODE_FILE_NOT_FOUND;
+        return;
     }
 
     JS_SetThreadStackLimit(cx, 0);
