@@ -510,6 +510,8 @@ main(int argc, char **argv, char **envp)
     glob = JS_NewObject(cx, &global_class, NULL, NULL);
     if (!glob)
         return 1;
+    if (!JS_InitStandardClasses(cx, glob))
+        return 1;
 
     JS_SetGlobalObject(cx, glob);
 
