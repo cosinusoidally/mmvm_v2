@@ -457,17 +457,13 @@ static JSFunctionSpec shell_functions[] = {
 int
 main(int argc, char **argv, char **envp)
 {
-    int stackDummy;
-    JSVersion version;
     JSRuntime *rt;
     JSContext *cx;
-    JSObject *glob, *envobj;
+    JSObject *glob;
     int result;
 
     gErrFile = stderr;
     gOutFile = stdout;
-
-    version = JSVERSION_DEFAULT;
 
     argc--;
     argv++;
@@ -493,8 +489,7 @@ main(int argc, char **argv, char **envp)
         return 1;
 
     /* Set version only after there is a global object. */
-    if (version != JSVERSION_DEFAULT)
-        JS_SetVersion(cx, version);
+    JS_SetVersion(cx, JSVERSION_DEFAULT);
 
     result = ProcessArgs(cx, glob, argv, argc);
 
