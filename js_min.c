@@ -95,29 +95,8 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
     int i, j, length;
     JSObject *argsObj;
     char *filename = NULL;
-    JSBool isInteractive = JS_TRUE;
 
-    /*
-     * Scan past all optional arguments so we can create the arguments object
-     * before processing any -f options, which must interleave properly with
-     * -v and -w options.  This requires two passes, and without getopt, we'll
-     * have to keep the option logic here and in the second for loop in sync.
-     */
-    for (i = 0; i < argc; i++) {
-        if (argv[i][0] != '-' || argv[i][1] == '\0') {
-            ++i;
-            break;
-        }
-        switch (argv[i][1]) {
-          case 'b':
-          case 'c':
-          case 'f':
-          case 'v':
-          case 'S':
-            ++i;
-            break;
-        }
-    }
+    i = 1;
 
     /*
      * Create arguments early and define it to root it, so it's safe from any
@@ -145,12 +124,11 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
     for (i = 0; i < argc; i++) {
         if (argv[i][0] != '-' || argv[i][1] == '\0') {
             filename = argv[i++];
-            isInteractive = JS_FALSE;
             break;
         }
     }
 
-    if (filename || isInteractive)
+    if (filename)
         Process(cx, obj, filename);
     return gExitCode;
 }
