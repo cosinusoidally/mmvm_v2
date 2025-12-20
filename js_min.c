@@ -258,26 +258,6 @@ GC(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     return JS_TRUE;
 }
 
-JSErrorFormatString jsShell_ErrorFormatString[JSErr_Limit] = {
-#if JS_HAS_DFLT_MSG_STRINGS
-#define MSG_DEF(name, number, count, exception, format) \
-    { format, count } ,
-#else
-#define MSG_DEF(name, number, count, exception, format) \
-    { NULL, count } ,
-#endif
-#include "jsshell.msg"
-#undef MSG_DEF
-};
-
-static const JSErrorFormatString *
-my_GetErrorMessage(void *userRef, const char *locale, const uintN errorNumber)
-{
-    if ((errorNumber > 0) && (errorNumber < JSShellErr_Limit))
-        return &jsShell_ErrorFormatString[errorNumber];
-    return NULL;
-}
-
 static void
 my_LoadErrorReporter(JSContext *cx, const char *message, JSErrorReport *report)
 {
