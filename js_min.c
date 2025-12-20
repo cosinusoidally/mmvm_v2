@@ -483,8 +483,6 @@ main(int argc, char **argv, char **envp)
     if (!JS_InitStandardClasses(cx, glob))
         return 1;
 
-    JS_SetGlobalObject(cx, glob);
-
     if (!JS_DefineFunctions(cx, glob, shell_functions))
         return 1;
 
