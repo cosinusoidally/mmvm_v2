@@ -6,4 +6,9 @@ i386-win32-tcc -O0 -g -c -fno-stack-protector -Wall -Wno-format -DXP_UNIX -DSVR4
 
 i386-win32-tcc artifacts/js_win32.o -L../firefox-1.0.8/lib_win32/ -ljs3250 -o artifacts/js_min_win32.exe
 
+cp ../firefox-1.0.8/lib_win32/js3250.dll artifacts/
+cp ../firefox-1.0.8/lib_win32/nspr4.dll artifacts/
+
+wine artifacts/js_min_win32.exe mandel.js
+
 echo DONE
