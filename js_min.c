@@ -63,18 +63,6 @@ FILE *gOutFile = NULL;
 
 static JSBool reportWarnings = JS_TRUE;
 
-typedef enum JSShellErrNum {
-#define MSG_DEF(name, number, count, exception, format) \
-    name = number,
-#include "jsshell.msg"
-#undef MSG_DEF
-    JSShellErr_Limit
-#undef MSGDEF
-} JSShellErrNum;
-
-static const JSErrorFormatString *
-my_GetErrorMessage(void *userRef, const char *locale, const uintN errorNumber);
-
 static void
 Process(JSContext *cx, JSObject *obj, char *filename)
 {
