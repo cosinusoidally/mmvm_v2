@@ -96,8 +96,6 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
     JSObject *argsObj;
     char *filename = NULL;
 
-    i = 1;
-
     /*
      * Create arguments early and define it to root it, so it's safe from any
      * GC calls nested below, and so it is available to -f <file> arguments.
@@ -109,6 +107,8 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
                            NULL, NULL, 0)) {
         return 1;
     }
+
+    i = 1;
 
     length = argc - i;
     for (j = 0; j < length; j++) {
