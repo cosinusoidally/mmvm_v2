@@ -56,8 +56,6 @@
 #define EXITCODE_FILE_NOT_FOUND 4
 
 size_t gStackChunkSize = 8192;
-static size_t gMaxStackSize = 0;
-static jsuword gStackBase;
 int gExitCode = 0;
 JSBool gQuitting = JS_FALSE;
 FILE *gErrFile = NULL;
@@ -532,8 +530,6 @@ main(int argc, char **argv, char **envp)
     JSContext *cx;
     JSObject *glob, *envobj;
     int result;
-
-    gStackBase = (jsuword)&stackDummy;
 
     gErrFile = stderr;
     gOutFile = stdout;
