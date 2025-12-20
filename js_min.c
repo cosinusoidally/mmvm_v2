@@ -87,8 +87,6 @@ Process(JSContext *cx, JSObject *obj, char *filename)
     return;
 }
 
-extern JSClass global_class;
-
 static int
 ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
 {
