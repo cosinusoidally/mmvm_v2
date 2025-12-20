@@ -48,7 +48,6 @@
 
 #include "jsstddef.h"
 #include "jsapi.h"
-#include "jscntxt.h"
 
 /* FIXME move this to separate file and impl a win32 polyfill */
 #include <dlfcn.h>
