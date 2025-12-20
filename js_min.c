@@ -98,7 +98,7 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
 
     /*
      * Create arguments early and define it to root it, so it's safe from any
-     * GC calls nested below, and so it is available to -f <file> arguments.
+     * GC calls nested below
      */
     argsObj = JS_NewArrayObject(cx, 0, NULL);
     if (!argsObj)
@@ -121,12 +121,7 @@ ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
         }
     }
 
-    for (i = 0; i < argc; i++) {
-        if (argv[i][0] != '-' || argv[i][1] == '\0') {
-            filename = argv[i++];
-            break;
-        }
-    }
+    filename = argv[0];
 
     if (filename)
         Process(cx, obj, filename);
