@@ -49,9 +49,6 @@
 #include "jsstddef.h"
 #include "jsapi.h"
 
-/* FIXME move this to separate file and impl a win32 polyfill */
-#include <dlfcn.h>
-
 #define EXITCODE_RUNTIME_ERROR 3
 #define EXITCODE_FILE_NOT_FOUND 4
 
