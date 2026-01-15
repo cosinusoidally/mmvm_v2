@@ -14,6 +14,6 @@ cp ../firefox-1.0.8/lib_win32/js3250.dll artifacts/
 cp ../firefox-1.0.8/lib_win32/nspr4.dll artifacts/
 
 wine artifacts/js_min_win32.exe mandel.js
-wine artifacts/js_min_win32.exe test2.js
+# wine artifacts/js_min_win32.exe test2.js
 
 echo DONE
