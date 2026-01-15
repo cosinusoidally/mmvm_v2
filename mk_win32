@@ -2,9 +2,13 @@
 
 set -xe
 
-i386-win32-tcc -O0 -g -c -fno-stack-protector -Wall -Wno-format -DXP_UNIX -DSVR4 -DSYSV -D_BSD_SOURCE -DPOSIX_SOURCE -DHAVE_LOCALTIME_R -DHAVE_VA_COPY -DVA_COPY=va_copy -I. -I ../firefox-1.0.8/js_src/src/ js_min_win32.c -o artifacts/js_win32.o
+# i386-win32-tcc -O0 -g -c -fno-stack-protector -Wall -Wno-format -DXP_UNIX -DSVR4 -DSYSV -D_BSD_SOURCE -DPOSIX_SOURCE -DHAVE_LOCALTIME_R -DHAVE_VA_COPY -DVA_COPY=va_copy -I. -I ../firefox-1.0.8/js_src/src/ js_min_win32.c -o artifacts/js_win32.o
 
-i386-win32-tcc artifacts/js_win32.o -L../firefox-1.0.8/lib_win32/ -ljs3250 -o artifacts/js_min_win32.exe
+# i386-win32-tcc artifacts/js_win32.o -L../firefox-1.0.8/lib_win32/ -ljs3250 -o artifacts/js_min_win32.exe
+
+wine ../tcc_win32/tcc.exe -O0 -g -c -fno-stack-protector -Wall -Wno-format -DXP_UNIX -DSVR4 -DSYSV -D_BSD_SOURCE -DPOSIX_SOURCE -DHAVE_LOCALTIME_R -DHAVE_VA_COPY -DVA_COPY=va_copy -I. -I ../firefox-1.0.8/js_src/src/ js_min_win32.c -o artifacts/js_win32.o
+
+wine ../tcc_win32/tcc.exe artifacts/js_win32.o -L../firefox-1.0.8/lib_win32/ -ljs3250 -o artifacts/js_min_win32.exe
 
 cp ../firefox-1.0.8/lib_win32/js3250.dll artifacts/
 cp ../firefox-1.0.8/lib_win32/nspr4.dll artifacts/
