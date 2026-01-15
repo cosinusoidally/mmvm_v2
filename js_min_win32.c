@@ -9,12 +9,10 @@ int dlsym(int handle, char* symbol) {
   if(foo) {
     printf("setup foo\n");
     foo = GetModuleHandle(0);
-  } else {
-    foo = 1;
-    printf("symbol %s address %d\n", symbol, d);
-    if(d == (int)puts) {
-      return (int)puts;
-    }
+  }
+  printf("symbol %s address %d\n", symbol, d);
+  if(d == (int)puts) {
+    return (int)puts;
   }
   puts("dlsym not impl");
   exit(1);
