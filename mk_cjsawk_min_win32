@@ -5,40 +5,41 @@ set -xe
 pushd .
 
 cd artifacts
-export PATH=$PWD:$PATH
 
 function compile_js {
   echo "build $2.M1"
-  time js_min.exe ../../../mmvm_v2/cjsawk_smold.js --cmd cjsawk $1 $2.M1
+  time wine $JS_BIN ../../../mmvm_v2/cjsawk_smold.js --cmd cjsawk $1 $2.M1
 
   echo "append definitions to make $2-0.M1"
 
   cat ../m2min_v3/simple_asm_defs.M1 ../m2min_v3/x86_defs.M1 ../m2min_v3/libc-core.M1 $2.M1 > $2-0.M1
 
   echo "build $2.hex2"
-  time js_min.exe ../../../mmvm_v2/cjsawk_smold.js --cmd m0 $2-0.M1 $2.hex2
+  time wine $JS_BIN ../../../mmvm_v2/cjsawk_smold.js --cmd m0 $2-0.M1 $2.hex2
 
   echo "generate $2-0.hex2"
   cat ../m2min_v3/ELF-i386.hex2 $2.hex2 > $2-0.hex2
 
   echo "build $2"
-  time js_min.exe ../../../mmvm_v2/cjsawk_smold.js --cmd hex2 $2-0.hex2 $2
+  time wine $JS_BIN ../../../mmvm_v2/cjsawk_smold.js --cmd hex2 $2-0.hex2 $2
 
   chmod +x $2
 }
 
 cd ../../tcc_simple/experiments/cjsawk/
 
-# compile_js artifacts/deps/cjsawk_full.c ../../../mmvm_v2/artifacts/cjsawk.exe
-# compile_js artifacts/deps/m0_full.c ../../../mmvm_v2/artifacts/m0.exe
+JS_BIN=../../../mmvm_v2/artifacts/js_min_win32.exe
+
+compile_js artifacts/deps/cjsawk_full.c ../../../mmvm_v2/artifacts/cjsawk.exe
+compile_js artifacts/deps/m0_full.c ../../../mmvm_v2/artifacts/m0.exe
 compile_js artifacts/deps/hex2_full.c ../../../mmvm_v2/artifacts/hex2.exe
 
 popd
 
 sha1sum artifacts/*exe ../tcc_simple/experiments/cjsawk/artifacts/builds/full_cc_x86_min/*exe |sort
 
-# for i in cjsawk m0 hex2 ; do
-for i in hex2 ; do
+for i in cjsawk m0 hex2 ; do
+# for i in hex2 ; do
 diff -u -s artifacts/$i.exe ../tcc_simple/experiments/cjsawk/artifacts/builds/full_cc_x86_min/$i.exe
 done
 
